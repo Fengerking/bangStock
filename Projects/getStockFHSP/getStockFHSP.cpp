@@ -121,10 +121,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 //	CStockFileCompInfo	filCompInfo;
 //	filCompInfo.Open ("600895", true);
-	CStockFileHYGN	filHYGN;
-	filHYGN.Open ("600895", true);
 
-//	SetTimer (hWnd, 101, 10, NULL);
+//	CStockFileHYGN	filHYGN;
+//	filHYGN.Open ("600895", false);
+
+	SetTimer (hWnd, 101, 10, NULL);
 
 //	char * pData = NULL;
 //	int nRC = g_pHTTPUtil->RequestData ("http://vip.stock.finance.sina.com.cn/corp/go.php/vISSUE_ShareBonus/stockid/300316.phtml", &pData);
@@ -154,6 +155,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		//filFHSP.Open (pCode, true);
 		//CStockFileFinance	filFinance;
 		//filFinance.Open (pCode, true);
+		CStockFileHYGN	filHYGN;
+		filHYGN.Open (pCode, false);
 
 
 		SetWindowText (hWnd, pCode);

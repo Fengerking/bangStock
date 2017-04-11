@@ -29,6 +29,8 @@ protected:
 	virtual int		DownLoad (void);
 
 public:
+	char			m_szHangYe[256];
+	char			m_szGaiNian[256];
 
 protected:
 	CHttpUtil *		m_pHttpUtil;
