@@ -546,6 +546,14 @@
 					RelativePath="..\..\Stock\CStockFileHist.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\Stock\CStockFileHYGN.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Stock\CStockFileHYGN.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Analyse"
@@ -654,6 +662,14 @@
 					RelativePath="..\..\winUI\CDlgStockInfo.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\winUI\CDlgStockSelect.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\winUI\CDlgStockSelect.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Window Files"
@@ -703,6 +719,14 @@
 				</File>
 				<File
 					RelativePath="..\..\winUI\CWndKXTInfo.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\winUI\CWndKXTSelect.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\winUI\CWndKXTSelect.h"
 					>
 				</File>
 				<File

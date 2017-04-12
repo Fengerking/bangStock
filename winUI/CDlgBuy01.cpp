@@ -142,10 +142,12 @@ int CDlgBuy01::CreateDlg (void)
 	if (m_hDlg == NULL)
 		return -1;
 	SetWindowLong (m_hDlg, GWL_USERDATA, (LONG)this);
-	//m_hBrushBG = CreateSolidBrush (MSC_GRAY_2);
+	//m_hBrushBG = CreateSolidBrush (MSC_GRAY_1);
 
 	InitParam ();
 	CenterDlg ();
+
+	InvalidateRect (m_hDlg, NULL, TRUE);
 
 	return 0;
 }
@@ -188,7 +190,9 @@ bool CDlgBuy01::UpdateKXTView (void)
 			pKXTInfo->SetStartEndDate (m_llStartDate, m_llEndCheck);
 		}
 		else
-			pKXTInfo->SetStartEndDate (m_llStartDate, m_llEndDate);
+		{
+			pKXTInfo->SetStartEndDate (0, -1);
+		}
 	}
 	m_pWndKXT->SetCode (szCode);
 

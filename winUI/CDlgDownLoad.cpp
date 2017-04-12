@@ -36,6 +36,11 @@ CDlgDownLoad::CDlgDownLoad(HINSTANCE hInst, HWND hParent)
 	, m_nOffsetHour (8)
 	, m_pHistInfo (NULL) 
 	, m_pRTInfoList (NULL)
+	, m_pStockFHSP (NULL)
+	, m_pStockFinance (NULL)
+	, m_pStockCompInfo (NULL)
+	, m_pStockHYGN (NULL)
+	, m_nUpdateType (0)
 {
 	m_pResultErr = new char[1024 * 512];
 	m_pResultLog = new char[1024 * 1024];
@@ -55,6 +60,11 @@ CDlgDownLoad::~CDlgDownLoad(void)
 	QC_DEL_A (m_pResultLog);
 	QC_DEL_P (m_pRTInfoList);
 	QC_DEL_P (m_pHistInfo);
+	
+	QC_DEL_P (m_pStockFHSP);
+	QC_DEL_P (m_pStockFinance);
+	QC_DEL_P (m_pStockCompInfo);
+	QC_DEL_P (m_pStockHYGN);
 }
 
 int CDlgDownLoad::OpenDlg (void)
@@ -99,7 +109,27 @@ int CDlgDownLoad::StartDownLoad (int nType)
 			}
 		}
 	}
+	
+	Prepare ();
 
+	if (nType == 0)
+	{
+		if (m_pRTInfoList == NULL)
+			m_pRTInfoList = new CStockRTList ();
+		m_nTimerDownLoad = SetTimer (m_hDlg, WM_TIMER_DOWNLOAD_TODAY, 10, NULL);
+	}
+	else
+	{
+		if (m_pHistInfo == NULL)
+			m_pHistInfo = new CStockHistInfo ();
+		m_nTimerDownLoad = SetTimer (m_hDlg, WM_TIMER_DOWNLOAD_HISTORY, 10, NULL);
+	}
+	
+	return 0;
+}
+
+int	CDlgDownLoad::Prepare (void)
+{
 	if (m_pCodeList == NULL)
 	{
 		m_pCodeList = new CStockFileCode ();
@@ -115,19 +145,11 @@ int CDlgDownLoad::StartDownLoad (int nType)
 	strcpy (m_pResultLog, "");
 	EnableWindow (GetDlgItem (m_hDlg, IDC_BUTTON_TODAY), FALSE);
 	EnableWindow (GetDlgItem (m_hDlg, IDC_BUTTON_HISTORY), FALSE);
-	if (nType == 0)
-	{
-		if (m_pRTInfoList == NULL)
-			m_pRTInfoList = new CStockRTList ();
-		m_nTimerDownLoad = SetTimer (m_hDlg, WM_TIMER_DOWNLOAD_TODAY, 10, NULL);
-	}
-	else
-	{
-		if (m_pHistInfo == NULL)
-			m_pHistInfo = new CStockHistInfo ();
-		m_nTimerDownLoad = SetTimer (m_hDlg, WM_TIMER_DOWNLOAD_HISTORY, 10, NULL);
-	}
-	
+	EnableWindow (GetDlgItem (m_hDlg, IDC_BUTTON_CQFQ), FALSE);
+	EnableWindow (GetDlgItem (m_hDlg, IDC_BUTTON_FINANCE), FALSE);
+	EnableWindow (GetDlgItem (m_hDlg, IDC_BUTTON_COMPINFO), FALSE);
+	EnableWindow (GetDlgItem (m_hDlg, IDC_BUTTON_HYGN), FALSE);
+
 	return 0;
 }
 
@@ -337,8 +359,20 @@ int CDlgDownLoad::ProcessDownLoadHistory (void)
 
 int CDlgDownLoad::DownLoadFinish (void)
 {
+	QC_DEL_P (m_pRTInfoList);
+	QC_DEL_P (m_pHistInfo);
+	
+	QC_DEL_P (m_pStockFHSP);
+	QC_DEL_P (m_pStockFinance);
+	QC_DEL_P (m_pStockCompInfo);
+	QC_DEL_P (m_pStockHYGN);
+
 	EnableWindow (GetDlgItem (m_hDlg, IDC_BUTTON_TODAY), TRUE);
 	EnableWindow (GetDlgItem (m_hDlg, IDC_BUTTON_HISTORY), TRUE);
+	EnableWindow (GetDlgItem (m_hDlg, IDC_BUTTON_CQFQ), TRUE);
+	EnableWindow (GetDlgItem (m_hDlg, IDC_BUTTON_FINANCE), TRUE);
+	EnableWindow (GetDlgItem (m_hDlg, IDC_BUTTON_COMPINFO), TRUE);
+	EnableWindow (GetDlgItem (m_hDlg, IDC_BUTTON_HYGN), TRUE);
 
 	char		szFile[256];
 	SYSTEMTIME	tmNow;
@@ -358,6 +392,69 @@ int CDlgDownLoad::DownLoadFinish (void)
 
 	return 0;
 }
+
+int CDlgDownLoad::StartUpdate (int nType)
+{
+	Prepare ();
+
+	m_nUpdateType = nType;
+	if (m_nUpdateType == BS_UPDATE_FHSP)
+		m_pStockFHSP = new CStockFileFHSP ();
+	else if (m_nUpdateType == BS_UPDATE_COMPINFO)
+		m_pStockCompInfo = new CStockFileCompInfo ();
+	else if (m_nUpdateType == BS_UPDATE_FINANCE)
+		m_pStockFinance = new CStockFileFinance ();
+	else if (m_nUpdateType == BS_UPDATE_HYGN)
+		m_pStockHYGN = new CStockFileHYGN ();
+
+	SetTimer (m_hDlg, WM_TIMER_UPDATE_COMPINFO, 10, NULL);
+	return 0;
+}
+
+int	CDlgDownLoad::OnTimerUpdate (void)
+{
+	if (m_pCodeList == NULL)
+		return false;
+
+	int		nCurSel = m_pCodeList->GetCurSel ();
+	char *	pCode = m_pCodeList->GetSelCode ();
+
+	int nRC = 0;
+	if (m_nUpdateType == BS_UPDATE_FHSP)
+		nRC = m_pStockFHSP->Open (pCode, true);
+	else if (m_nUpdateType == BS_UPDATE_COMPINFO)
+		nRC = m_pStockCompInfo->Open (pCode, true);
+	else if (m_nUpdateType == BS_UPDATE_FINANCE)
+		nRC = m_pStockFinance->Open (pCode, true);
+	else if (m_nUpdateType == BS_UPDATE_HYGN)
+		nRC = m_pStockHYGN->Open (pCode, true);
+
+	strcat (m_pResultLog, pCode);
+	if (nRC == QC_ERR_NONE)
+		strcat (m_pResultLog, "    OK\r\n");
+	else
+		strcat (m_pResultLog, "    Failed\r\n");
+	if (nRC != QC_ERR_NONE)
+	{
+		strcat (m_pResultErr, pCode);
+		strcat (m_pResultErr, "    Failed\r\n");
+		SetWindowText (m_hEdtResult, m_pResultErr);
+	}
+	SetWindowText (m_hEdtInfo, pCode);
+
+	SendMessage (m_hProgress, PBM_SETPOS, (WPARAM) nCurSel, 0); 
+
+	if (nCurSel+1 == m_pCodeList->GetCodeCount ())
+	{
+		DownLoadFinish ();
+		return 0;
+	}
+	m_pCodeList->SetCurSel (nCurSel+1);
+	m_nTimerDownLoad = SetTimer (m_hDlg, WM_TIMER_UPDATE_COMPINFO, 10, NULL);
+
+	return 0;
+}
+
 
 INT_PTR CALLBACK CDlgDownLoad::DownLoadDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -403,7 +500,7 @@ INT_PTR CALLBACK CDlgDownLoad::DownLoadDlgProc(HWND hDlg, UINT message, WPARAM w
 			{
 				pDlgDown->ProcessDownLoadToday ();
 			}
-			else
+			else if (wParam == WM_TIMER_DOWNLOAD_HISTORY)
 			{
 				int nRC = pDlgDown->ProcessDownLoadHistory ();
 				pDlgDown->m_nCodeIndex++;
@@ -417,6 +514,10 @@ INT_PTR CALLBACK CDlgDownLoad::DownLoadDlgProc(HWND hDlg, UINT message, WPARAM w
 					else
 						pDlgDown->m_nTimerDownLoad = SetTimer (hDlg, WM_TIMER_DOWNLOAD_HISTORY, 2000, NULL);
 				}
+			}
+			else if (wParam == WM_TIMER_UPDATE_COMPINFO)
+			{
+				pDlgDown->OnTimerUpdate ();
 			}
 		}
 		break;
@@ -433,6 +534,19 @@ INT_PTR CALLBACK CDlgDownLoad::DownLoadDlgProc(HWND hDlg, UINT message, WPARAM w
 			break;
 		case IDC_BUTTON_HISTORY:
 			pDlgDown->StartDownLoad (1);
+			break;
+
+		case IDC_BUTTON_CQFQ:
+			pDlgDown->StartUpdate (BS_UPDATE_FHSP);
+			break;
+		case IDC_BUTTON_FINANCE:
+			pDlgDown->StartUpdate (BS_UPDATE_FINANCE);
+			break;
+		case IDC_BUTTON_COMPINFO:
+			pDlgDown->StartUpdate (BS_UPDATE_COMPINFO);
+			break;
+		case IDC_BUTTON_HYGN:
+			pDlgDown->StartUpdate (BS_UPDATE_HYGN);
 			break;
 
 		case IDOK:

@@ -171,6 +171,13 @@ int CDlgStockInfo::OpenStockFile (void)
 	}
 	SendMessage (GetDlgItem (m_hDlg, IDC_LIST_MYSTOCK), LB_ADDSTRING, 0, (LPARAM)szLine);
 
+	strcpy (szLine, "    ");
+	SendMessage (GetDlgItem (m_hDlg, IDC_LIST_MYSTOCK), LB_ADDSTRING, 0, (LPARAM)szLine);
+
+	FormatDouble ((dHandMoneySell - dHandMoneyBuy) + (dSellMoneySell - dSellMoneyBuy), szItem);
+	sprintf (szLine, "×ÜÓ¯¿÷£º %s", szItem);
+	SendMessage (GetDlgItem (m_hDlg, IDC_LIST_MYSTOCK), LB_ADDSTRING, 0, (LPARAM)szLine);
+
 	return QC_ERR_NONE;
 }
 

@@ -34,6 +34,7 @@ CWndMng::CWndMng(HINSTANCE hInst)
 	, m_pDlgDataAnalyse (NULL)
 	, m_pDlgKXTStudy (NULL)
 	, m_pWndKXTView (NULL)
+	, m_pWndKXTSelect (NULL)
 	, m_pWndDayInfo1 (NULL)
 	, m_pWndDayInfo2 (NULL)
 	, m_pWndDayInfo3 (NULL)
@@ -59,6 +60,7 @@ CWndMng::~CWndMng(void)
 	QC_DEL_P (m_pDlgDataAnalyse);
 	QC_DEL_P (m_pDlgKXTStudy);
 	QC_DEL_P (m_pWndKXTView);
+	QC_DEL_P (m_pWndKXTSelect);
 
 	QC_DEL_P (m_pWndDayInfo1);
 	QC_DEL_P (m_pWndDayInfo2);
@@ -144,6 +146,8 @@ LRESULT	CWndMng::OnResize (void)
 		SetWindowPos (m_pDlgKXTStudy->GetDlg (), NULL, rcWnd.left, rcWnd.top, rcWnd.right -rcWnd.left, rcWnd.bottom - rcWnd.top, 0);
 	if (m_pWndKXTView != NULL && m_pWndKXTView->GetWnd () != NULL)
 		SetWindowPos (m_pWndKXTView->GetWnd (), NULL, rcWnd.left, rcWnd.top, rcWnd.right -rcWnd.left, rcWnd.bottom - rcWnd.top, 0);
+	if (m_pWndKXTSelect != NULL && m_pWndKXTSelect->GetWnd () != NULL)
+		SetWindowPos (m_pWndKXTSelect->GetWnd (), NULL, rcWnd.left, rcWnd.top, rcWnd.right -rcWnd.left, rcWnd.bottom - rcWnd.top, 0);
 
 	if (m_pWndCompInfo != NULL && m_pWndCompInfo->GetWnd () != NULL)
 	{
@@ -174,6 +178,8 @@ void CWndMng::ShowStockWnd (void)
 		QC_DEL_P (m_pDlgKXTStudy);
 	if (m_nShowWnd != WND_STOCK_KXT_RESEARCH)
 		QC_DEL_P (m_pWndKXTView);
+	if (m_nShowWnd != WND_STOCK_KXT_SELECT)
+		QC_DEL_P (m_pWndKXTSelect);
 
 	if (m_nShowWnd == WND_STOCK_FST)
 	{
@@ -239,6 +245,13 @@ void CWndMng::ShowStockWnd (void)
 		GetClientRect (m_hMainWnd, &rcWnd);
 		m_pWndKXTView = new CWndKXTView (m_hInst);
 		m_pWndKXTView->CreateWnd (m_hMainWnd, rcWnd, MSC_BLACK);
+	}
+	else if (m_nShowWnd == WND_STOCK_KXT_SELECT)
+	{
+		RECT rcWnd;
+		GetClientRect (m_hMainWnd, &rcWnd);
+		m_pWndKXTSelect = new CWndKXTSelect (m_hInst);
+		m_pWndKXTSelect->CreateWnd (m_hMainWnd, rcWnd, MSC_BLACK);
 	}
 }
 
@@ -318,6 +331,10 @@ LRESULT CWndMng::OnKeyUp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 	else if (m_nShowWnd == WND_STOCK_KXT_RESEARCH)
 	{
 		return SendMessage (m_pWndKXTView->GetWnd (), uMsg, wParam, lParam);
+	}
+	else if (m_nShowWnd == WND_STOCK_KXT_SELECT)
+	{
+		return SendMessage (m_pWndKXTSelect->GetWnd (), uMsg, wParam, lParam);
 	}
 
 	return S_FALSE;
@@ -416,6 +433,8 @@ LRESULT CWndMng::OnReceiveMessage (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
 					m_pWndKXTInfo->UpdateDayLineSetting ();
 				if (m_pWndKXTView != NULL)
 					m_pWndKXTView->UpdateDayLineSetting ();
+				if (m_pWndKXTSelect != NULL)
+					m_pWndKXTSelect->UpdateDayLineSetting ();
 			}
 			break;
 		}
@@ -451,6 +470,8 @@ LRESULT CWndMng::OnReceiveMessage (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
 					m_pWndCompInfo = new CWndCompInfo (m_hInst);
 				if (m_nShowWnd == WND_STOCK_KXT_RESEARCH)	
 					m_pWndCompInfo->SetCode (m_pWndKXTView->GetCode ());
+				else if (m_nShowWnd == WND_STOCK_KXT_SELECT)	
+					m_pWndCompInfo->SetCode (m_pWndKXTSelect->GetCode ());
 				else	
 					m_pWndCompInfo->SetCode (m_pWndRTInfo->GetCode ());
 				RECT rcWnd;
@@ -472,6 +493,10 @@ LRESULT CWndMng::OnReceiveMessage (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
 			break;
 		case ID_KXT_RESEARCH:
 			m_nShowWnd = WND_STOCK_KXT_RESEARCH;
+			ShowStockWnd ();
+			break;
+		case ID_MYSELECT_STOCK:
+			m_nShowWnd = WND_STOCK_KXT_SELECT;
 			ShowStockWnd ();
 			break;
 

@@ -125,7 +125,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //	CStockFileHYGN	filHYGN;
 //	filHYGN.Open ("600895", false);
 
-	SetTimer (hWnd, 101, 10, NULL);
+//	SetTimer (hWnd, 101, 10, NULL);
 
 //	char * pData = NULL;
 //	int nRC = g_pHTTPUtil->RequestData ("http://vip.stock.finance.sina.com.cn/corp/go.php/vISSUE_ShareBonus/stockid/300316.phtml", &pData);

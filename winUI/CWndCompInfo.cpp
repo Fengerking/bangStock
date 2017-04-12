@@ -15,6 +15,7 @@
 
 #include "CFileIO.h"
 #include "CStockFileHist.h"
+#include "CStockFileHYGN.h"
 
 #include "CWndCompInfo.h"
 #include "USystemFunc.h"
@@ -168,6 +169,15 @@ int CWndCompInfo::DrawCompInfo (HDC hDC)
 	strcat (szLine, szItem);
 	nYPos += m_nFntMidHeight + 8 + 24;
 	DrawStrText (hDC, szLine, m_hFntMid, nXPos, nYPos, MSC_GREEN, 0); 
+
+
+	CStockFileHYGN filHYGN;
+	filHYGN.Open (m_szCode, false);
+	nYPos += m_nFntMidHeight + 8 + 24;
+	DrawStrText (hDC, filHYGN.m_szHangYe, m_hFntMid, nXPos, nYPos, MSC_GREEN, 0); 
+	nYPos += m_nFntMidHeight + 8;
+	DrawStrText (hDC, filHYGN.m_szGaiNian, m_hFntMid, nXPos, nYPos, MSC_GREEN, 0); 
+
 
 	nLineSize = qcReadTextLine (pBuff, m_nCompInfoSize - (pBuff - m_pCompInfoData), szLine, sizeof (szLine));
 	pBuff += nLineSize;

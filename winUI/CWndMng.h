@@ -25,6 +25,7 @@
 #include "CDlgKXTStudy.h"
 #include "CWndKXTView.h"
 #include "CWndCompInfo.h"
+#include "CWndKXTSelect.h"
 
 #include "CStockMng.h"
 
@@ -36,6 +37,7 @@
 #define	WND_STOCK_DATA_ANALYSE		10
 #define	WND_STOCK_KXT_STUDY			11
 #define	WND_STOCK_KXT_RESEARCH		12
+#define	WND_STOCK_KXT_SELECT		13
 
 #define	WND_STOCK_SEL_LIKE			50
 #define	WND_STOCK_SEL_BUY			51
@@ -70,6 +72,7 @@ protected:
 	CDlgDataAnalyse *	m_pDlgDataAnalyse;
 	CDlgKXTStudy *		m_pDlgKXTStudy;
 	CWndKXTView *		m_pWndKXTView;
+	CWndKXTSelect *		m_pWndKXTSelect;
 
 	CWndDayInfo *		m_pWndDayInfo1;
 	CWndDayInfo *		m_pWndDayInfo2;

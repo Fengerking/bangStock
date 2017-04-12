@@ -45,8 +45,8 @@ CWndSelection::~CWndSelection(void)
 
 bool CWndSelection::SetSelectType (int nSelType)
 {
-	if (m_nSelType == nSelType)
-		return true;
+//	if (m_nSelType == nSelType)
+//		return true;
 	m_nSelType = nSelType;
 	QC_DEL_P (m_pCodeList);
 	if (m_pDlgSellMsg != NULL)
