@@ -113,8 +113,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	g_pCodeList = new CStockFileCode ();
 	g_pCodeList->Open ("codeList.txt");
 
-//	CStockFileFHSP filFHSP;
-//	filFHSP.Open ("600477", true);
+	CStockFileFHSP filFHSP;
+	filFHSP.Open ("300400", true);
 
 //	CStockFileFinance	filFinance;
 //	filFinance.Open ("600477", false);

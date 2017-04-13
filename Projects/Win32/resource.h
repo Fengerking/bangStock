@@ -116,7 +116,8 @@
 #define IDC_RADIO_NEXT                  1070
 #define IDC_LIST_MYSTOCK                1070
 #define IDC_BUTTON_FILE                 1071
-#define IDC_BUTTON_FILE2                1072
+#define IDC_BUTTON_SELECT1              1072
+#define IDC_BUTTON_SELECT3              1073
 #define ID_KXPic                        32773
 #define ID_VIEW_KXPIC                   32774
 #define ID_VIEW_FSPIC                   32775
@@ -143,6 +144,10 @@
 #define ID_FILE_EXIT                    32801
 #define ID_32802                        32802
 #define ID_MYSELECT_STOCK               32803
+#define ID_32804                        32804
+#define ID_32805                        32805
+#define ID_FILE_STOCK_SELECT            32806
+#define ID_FILE_STOCK_BUY               32807
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -151,8 +156,8 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        139
-#define _APS_NEXT_COMMAND_VALUE         32804
-#define _APS_NEXT_CONTROL_VALUE         1072
+#define _APS_NEXT_COMMAND_VALUE         32808
+#define _APS_NEXT_CONTROL_VALUE         1074
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

@@ -71,6 +71,17 @@ bool CWndKXTSelect::OnTimer (WPARAM wParam, LPARAM lParam)
 
 bool CWndKXTSelect::OnKeyUp (WPARAM wParam, LPARAM lParam)
 {
+	if (m_pDlgSel != NULL && (wParam == VK_PRIOR || wParam == VK_NEXT))
+	{
+		char * pCode = NULL;
+		if (wParam == VK_PRIOR)
+			pCode = m_pDlgSel->GetStockCode (false);
+		else
+			pCode = m_pDlgSel->GetStockCode (true);
+		if (pCode != NULL)
+			SetCode (pCode);
+		return true;
+	}
 	long	nLen = strlen (m_szKeyCode);
 	if ((wParam == VK_DELETE || wParam == VK_BACK) && nLen > 0)
 	{
@@ -109,12 +120,8 @@ LRESULT CWndKXTSelect::OnResize (void)
 	LRESULT lRC = CWndKXTInfo::OnResize ();
 
 	if (m_pDlgSel != NULL)
-	{
-		m_rcKXT.right -= m_pDlgSel->GetWidth ();
-		m_rcNUM.right -= m_pDlgSel->GetWidth ();
-		m_rcJST.right -= m_pDlgSel->GetWidth ();
 		m_pDlgSel->OnResize ();
-	}
+
 	return lRC;
 }
 

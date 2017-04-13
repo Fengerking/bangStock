@@ -40,7 +40,7 @@ CWndMng::CWndMng(HINSTANCE hInst)
 	, m_pWndDayInfo3 (NULL)
 	, m_pWndDayInfo4 (NULL)
 	, m_pWndCompInfo (NULL)
-	, m_nShowWnd (WND_STOCK_KXT)
+	, m_nShowWnd (WND_STOCK_KXT_SELECT)
 	, m_pStockMng (NULL)
 {
 	m_pRegMng = new CRegMng ("Setting");
@@ -199,12 +199,12 @@ void CWndMng::ShowStockWnd (void)
 	}
 	else if (m_nShowWnd == WND_STOCK_SEL_LIKE)
 	{
-		m_pWndSelect->SetSelectType (WND_SEL_TYPE_LIKE);
+		m_pWndSelect->SetSelectType (NULL, WND_SEL_TYPE_LIKE);
 		ShowWindow (m_pWndSelect->GetWnd (), SW_SHOW);
 	}
 	else if (m_nShowWnd == WND_STOCK_SEL_BUY)
 	{
-		m_pWndSelect->SetSelectType (WND_SEL_TYPE_BUY);
+		m_pWndSelect->SetSelectType (NULL, WND_SEL_TYPE_BUY);
 		ShowWindow (m_pWndSelect->GetWnd (), SW_SHOW);
 	}
 	else if (m_nShowWnd == WND_STOCK_DAY)
@@ -340,6 +340,37 @@ LRESULT CWndMng::OnKeyUp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return S_FALSE;
 }
 
+int CWndMng::OpenStockFile (int nType)
+{
+	char				szFile[256];
+	DWORD				dwID = 0;
+	OPENFILENAME		ofn;
+	memset (szFile, 0, sizeof (szFile));
+	memset( &(ofn), 0, sizeof(ofn));
+	ofn.lStructSize	= sizeof(ofn);
+	ofn.hwndOwner = m_hMainWnd;
+	ofn.lpstrFilter = TEXT("Stock File (*.txt)\0*.txt\0");	
+	if (_tcsstr (szFile, _T(":/")) != NULL)
+		_tcscpy (szFile, _T("*.txt"));
+	ofn.lpstrFile = szFile;
+	ofn.nMaxFile = MAX_PATH;
+	ofn.lpstrTitle = TEXT("Open Stock File");
+	ofn.Flags = OFN_EXPLORER;
+			
+	if (!GetOpenFileName(&ofn))
+		return QC_ERR_FAILED;	
+
+	if (m_pWndSelect != NULL)
+		m_pWndSelect->SetSelectType (szFile, nType);
+	if (nType == WND_SEL_TYPE_LIKE)
+		m_nShowWnd = WND_STOCK_SEL_LIKE;
+	else
+		m_nShowWnd = WND_STOCK_SEL_BUY;
+	ShowStockWnd ();
+
+	return QC_ERR_NONE;
+}
+
 LRESULT CWndMng::OnReceiveMessage (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
@@ -418,6 +449,17 @@ LRESULT CWndMng::OnReceiveMessage (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
 		// Parse the menu selections:
 		switch (wmId)
 		{
+		case ID_FILE_STOCK_SELECT:
+		{
+			OpenStockFile (WND_SEL_TYPE_LIKE);
+			break;
+		}
+		case ID_FILE_STOCK_BUY:
+		{
+			OpenStockFile (WND_SEL_TYPE_BUY);
+			break;
+		}
+
 		case ID_FILE_DOWNLOAD:
 		{
 			CDlgDownLoad	dlgDown (m_hInst, m_hMainWnd);

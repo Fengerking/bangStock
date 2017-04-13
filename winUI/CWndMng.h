@@ -56,6 +56,7 @@ protected:
 	virtual LRESULT		OnKeyUp (UINT uMsg, WPARAM wParam, LPARAM lParam);
 	virtual LRESULT		OnRButtonUp (UINT uMsg, WPARAM wParam, LPARAM lParam);
 	virtual void		ShowStockWnd (void);
+	virtual int			OpenStockFile (int nType);
 
 
 protected:

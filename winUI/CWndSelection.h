@@ -26,7 +26,7 @@ public:
 	CWndSelection(HINSTANCE hInst);
 	virtual ~CWndSelection(void);
 
-	virtual bool	SetSelectType (int nSelType);
+	virtual bool	SetSelectType (char * pFile, int nSelType);
 
 	virtual bool	CreateWnd (HWND hParent, RECT rcView, COLORREF clrBG);
 	virtual LRESULT	OnReceiveMessage (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -55,6 +55,8 @@ protected:
 
 protected:
 	CStockFileCode *	m_pCodeList;
+	char				m_szFileBuy[256];
+	char				m_szFileSel[256];
 	int					m_nSelType;
 
 	bool				m_bNeedUpdate;

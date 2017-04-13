@@ -16,6 +16,9 @@
 #include "CStockFileHist.h"
 
 #include "CWndSelection.h"
+
+#include "CRegMng.h"
+
 #include "USystemFunc.h"
 
 CWndSelection::CWndSelection(HINSTANCE hInst)
@@ -33,17 +36,20 @@ CWndSelection::CWndSelection(HINSTANCE hInst)
 
 	InitParam ();
 	memset (m_szSelCode, 0, sizeof (m_szSelCode));
-	SetSelectType  (WND_SEL_TYPE_BUY);
+	SetSelectType  (NULL, WND_SEL_TYPE_BUY);
 }
 
 CWndSelection::~CWndSelection(void)
 {
+	CRegMng::g_pRegMng->SetTextValue ("StockBuyList", m_szFileBuy);
+	CRegMng::g_pRegMng->SetTextValue ("StockSelList", m_szFileSel);
+
 	QC_DEL_P (m_pRTInfoList);
 	QC_DEL_P (m_pCodeList);
 	ReleaseItemData ();
 }
 
-bool CWndSelection::SetSelectType (int nSelType)
+bool CWndSelection::SetSelectType (char * pFile, int nSelType)
 {
 //	if (m_nSelType == nSelType)
 //		return true;
@@ -54,12 +60,16 @@ bool CWndSelection::SetSelectType (int nSelType)
 	if (m_nSelType == WND_SEL_TYPE_LIKE)
 	{
 		m_pCodeList = new CStockFileCode ();
-		m_pCodeList->Open ("codeSelect.txt");
+		if (pFile != NULL)
+			strcpy (m_szFileSel, pFile);
+		m_pCodeList->Open (m_szFileSel);
 	}
 	else if (m_nSelType == WND_SEL_TYPE_BUY)
 	{
 		m_pCodeList = new CStockFileBuy ();
-		m_pCodeList->Open ("codeBuy.txt");
+		if (pFile != NULL)
+			strcpy (m_szFileBuy, pFile);
+		m_pCodeList->Open (m_szFileBuy);
 		if (m_pDlgSellMsg != NULL)
 		{
 			CStockFileBuy * pStockBuy = (CStockFileBuy *)m_pCodeList;
@@ -516,6 +526,16 @@ void CWndSelection::InitParam (void)
 	strcpy (m_aItemName[14], "Î¯±È");
 	strcpy (m_aItemName[15], "ÕÇ·ù");
 
+	char * pFile = CRegMng::g_pRegMng->GetTextValue ("StockBuyList");
+	if (strlen (pFile) > 0)
+		strcpy (m_szFileBuy, pFile);
+	else
+		strcpy (m_szFileBuy, "codeBuy.txt");
+	pFile = CRegMng::g_pRegMng->GetTextValue ("StockSelList");
+	if (strlen (pFile) > 0)
+		strcpy (m_szFileSel, pFile);
+	else
+		strcpy (m_szFileSel, "codeSelect.txt");
 }
 
 bool CWndSelection::CreateWnd (HWND hParent, RECT rcView, COLORREF clrBG)
@@ -679,16 +699,17 @@ bool CWndSelection::CheckSellChance (void)
 					continue;
 				if (qcGetTodayFrom2000 () - qcGetDaysFrom2000 (pBuyItem->m_nBuyYear, pBuyItem->m_nBuyMonth, pBuyItem->m_nBuyDay) < 1)
 					continue;
+
+				// it should sell now buyao buyao
+				pItemRT->m_dAllMoney = -81.81;
+				strcat (szWinInfo, pItemRT->m_szCode);
+				strcat (szWinInfo, "\r\n");
+				if (m_pDlgSellMsg != NULL)
+				{
+					m_pDlgSellMsg->AddStockItem (pItemRT, pItemKXT->m_pDayLine->m_dLine5);
+				}
 			}
 
-			// it should sell now buyao buyao
-			pItemRT->m_dAllMoney = -81.81;
-			strcat (szWinInfo, pItemRT->m_szCode);
-			strcat (szWinInfo, "\r\n");
-			if (m_pDlgSellMsg != NULL)
-			{
-				m_pDlgSellMsg->AddStockItem (pItemRT, pItemKXT->m_pDayLine->m_dLine5);
-			}
 		}
 	}
 	delete pKXTInfo;

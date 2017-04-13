@@ -111,6 +111,7 @@ int CStockFileFHSP::Parser (bool bDownLoad)
 	char *		pPos = NULL;
 	char *		pTxt = NULL;
 	int			nLine = 0;
+	int			nRC = 0;
 	qcStockFHSPInfoItem  * pItem = NULL;
 	while (pBuff - pFileData < nFileSize)
 	{
@@ -203,8 +204,14 @@ int CStockFileFHSP::Parser (bool bDownLoad)
 		pTxt += 4;
 		pPos = strstr (szLine, "</td>");
 		*pPos = 0;
-		sscanf (pTxt, "%d-%d-%d", &pItem->m_nYear, &pItem->m_nMonth, &pItem->m_nDay);
-	
+		nRC = sscanf (pTxt, "%d-%d-%d", &pItem->m_nYear, &pItem->m_nMonth, &pItem->m_nDay);
+		if (nRC == 0)
+		{
+			pItem->m_dGive = 0;
+			pItem->m_dGain = 0;
+			pItem->m_dDividend = 0;
+			pItem->m_dRation = 0;
+		}
 
 		while (strstr (szLine, "</tr>") == NULL)
 		{

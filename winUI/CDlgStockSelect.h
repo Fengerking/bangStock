@@ -15,6 +15,8 @@
 #include "CDlgBase.h"
 
 #include "CWndKXTInfo.h"
+#include "CStockFileCode.h"
+#include "CStockAnalyseBuy01.h"
 
 class CDlgStockSelect : public CDlgBase
 {
@@ -25,19 +27,30 @@ public:
 	virtual int		CreateDlg (void);
 	LRESULT			OnResize (void);
 
-	int				GetWidth (void) {return m_nWidth;}
-
 	virtual void	SetWndKXT (CWndKXTInfo * pWndKXT) {m_pWndKXT = pWndKXT;}
+	char *			GetStockCode (bool bNext);
 
 protected:
-	virtual int			OpenSelectFile (void);
+
+	virtual int			OpenSelectFile (char * pFile);
 	virtual int			OnInitDlg (void);
+
+	bool				OnSelectStock1 (void);
+	bool				OnTimer (WPARAM wParam, LPARAM lParam);
+	bool				UpdateKXTView (void);
+	void				InitParam (void);
 
 	virtual INT_PTR		OnReceiveMsg (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 protected:
-	CWndKXTInfo *		m_pWndKXT;
-	int					m_nWidth;
+	CStockFileCode *		m_pCodeList;
+	char					m_szCode[32];
+
+	int						m_nTimerAnalyse;
+	CStockAnalyseBuy01 *	m_pBuy01;
+
+
+	CWndKXTInfo *			m_pWndKXT;
 
 };
 #endif //__CDlgStockSelect_H__

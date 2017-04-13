@@ -17,8 +17,6 @@
 #include "CWndKXTInfo.h"
 #include "CStockAnalyseBuy01.h"
 
-#define		WM_TIMER_ANALYSE	601
-
 struct sStockBuySellInfo {
 	double		dBuyPrice;
 	SYSTEMTIME	tmBuy;

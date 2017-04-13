@@ -12,6 +12,8 @@
 #ifndef __CDlgBase_H__
 #define __CDlgBase_H__
 
+#define		WM_TIMER_ANALYSE	601
+
 class CDlgBase
 {
 public:

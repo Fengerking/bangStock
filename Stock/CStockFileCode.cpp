@@ -38,7 +38,12 @@ int CStockFileCode::Open (char * pFile)
 	if (pFile == NULL)
 		sprintf (m_szFile, "%sdata\\%s", m_szFile, "codeList.txt");
 	else
-		sprintf (m_szFile, "%sdata\\%s", m_szFile, pFile);
+	{
+		if (strlen (pFile) < 16)
+			sprintf (m_szFile, "%sdata\\%s", m_szFile, pFile);
+		else
+			strcpy (m_szFile, pFile);
+	}
 	if (OpenFile (m_szFile) != QC_ERR_NONE)
 		return QC_ERR_FAILED;
 
