@@ -54,8 +54,11 @@ public:
 protected:
 	virtual LRESULT		OnResize (void);
 	virtual LRESULT		OnKeyUp (UINT uMsg, WPARAM wParam, LPARAM lParam);
+	virtual LRESULT		OnRButtonDown (UINT uMsg, WPARAM wParam, LPARAM lParam);
+	virtual LRESULT		OnRButtonMove (UINT uMsg, WPARAM wParam, LPARAM lParam);
 	virtual LRESULT		OnRButtonUp (UINT uMsg, WPARAM wParam, LPARAM lParam);
 	virtual void		ShowStockWnd (void);
+	virtual void		ShowIndexWnd (int nID);
 	virtual int			OpenStockFile (int nType);
 
 
@@ -81,9 +84,14 @@ protected:
 	CWndDayInfo *		m_pWndDayInfo4;
 
 	CWndCompInfo *		m_pWndCompInfo;
+	CWndKXTInfo *		m_pWndKXTIndex;
 
 	int					m_nShowWnd;
+	int					m_nIndexType;
+	int					m_nIndexHigh;
 
+	HCURSOR				m_hCursorOld;
+	HCURSOR				m_hCursorSize;
 
 	CStockMng *			m_pStockMng;
 

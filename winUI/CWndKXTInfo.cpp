@@ -54,7 +54,7 @@ CWndKXTInfo::~CWndKXTInfo(void)
 	QC_DEL_P (m_pKXTInfo);
 }
 
-int CWndKXTInfo::SetSource (int nSource)
+int CWndKXTInfo::SetSource (int nSource, char * pCode)
 {
 	if (m_nSourceType == nSource)
 		return QC_ERR_NONE;
@@ -64,7 +64,9 @@ int CWndKXTInfo::SetSource (int nSource)
 		m_pKXTInfo = new CStockFileHist ();
 	else
 		m_pKXTInfo = new CStockKXTInfo ();
-	if (strlen (m_szCode) == 6)
+	if (pCode != NULL)
+		m_pKXTInfo->SetCode (pCode);
+	else if (strlen (m_szCode) == 6)
 		m_pKXTInfo->SetCode (m_szCode);
 	InvalidateRect (m_hWnd, NULL, FALSE);
 	return QC_ERR_NONE;
@@ -840,10 +842,10 @@ LRESULT CWndKXTInfo::OnReceiveMessage (HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 	case WM_MOUSEMOVE:
 		if (wParam == MK_LBUTTON)
 		{
-			m_nXPos = LOWORD(lParam); 
-			m_nYPos = HIWORD(lParam);
-			m_bMouseDown = true;
-			InvalidateRect (m_hWnd, NULL, FALSE);
+//			m_nXPos = LOWORD(lParam); 
+//			m_nYPos = HIWORD(lParam);
+//			m_bMouseDown = true;
+//			InvalidateRect (m_hWnd, NULL, FALSE);
 		}
 		break;
 

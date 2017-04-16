@@ -166,8 +166,10 @@ int CDlgDownLoad::ProcessDownLoadToday (void)
 		pCode = m_pCodeList->GetCodeNum (i);
 		if (pCode[0] == '6' || pCode[0] == '9')
 			sprintf (szCode, "sh%s", pCode);
-		else
+		else if (pCode[0] == '3' || pCode[0] == '0' || pCode[0] == '2')
 			sprintf (szCode, "sz%s", pCode);
+		else
+			strcpy (szCode, pCode);
 		if (i > m_nCodeIndex)
 			strcat (m_szCodeList, "%2C");
 		strcat (m_szCodeList, szCode);
@@ -178,9 +180,12 @@ int CDlgDownLoad::ProcessDownLoadToday (void)
 			strcat (m_szCodeInfo, "\r\n");
 
 	}
-	m_nCodeIndex += m_nCodeStep;
 	SetWindowText (m_hEdtInfo, m_szCodeInfo);
 
+	if (m_nCodeIndex == 0)
+		m_pRTInfoList->SetNeedIndex (true);
+	else
+		m_pRTInfoList->SetNeedIndex (false);
 	int nRC = m_pRTInfoList->SetCode (m_szCodeList);
 	if (nRC != QC_ERR_NONE)
 		return nRC;
@@ -211,8 +216,10 @@ int CDlgDownLoad::ProcessDownLoadToday (void)
 		qcGetAppPath (NULL, szFile, sizeof (szFile));
 		if (pItem->m_szCode[0] == '6' || pItem->m_szCode[0] == '9')
 			sprintf (szFile, "%sdata\\history\\sh%s.txt", szFile, pItem->m_szCode);
-		else 
+		else if (pCode[0] == '3' || pCode[0] == '0' || pCode[0] == '2')
 			sprintf (szFile, "%sdata\\history\\sz%s.txt", szFile, pItem->m_szCode);
+		else
+			sprintf (szFile, "%sdata\\history\\%s.txt", szFile, pItem->m_szCode);
 
 		hFile = CreateFile(szFile, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_ALWAYS, (DWORD) 0, NULL);
 		if (hFile == INVALID_HANDLE_VALUE)
@@ -259,10 +266,51 @@ int CDlgDownLoad::ProcessDownLoadToday (void)
 			strcat (m_pResultLog, "  OK.\r\n");
 		}
 	}
+	// save the index info
+	if (m_nCodeIndex == 0)
+	{
+		int		nMoney = 0;
+		int		nVolume = 0;
+		char	szDate[32];
+		qcStockIndexInfoItem *	pInfoItem = NULL;
+		pos = m_pRTInfoList->m_lstIndexItem.GetHeadPosition ();
+		while (pos != NULL)
+		{
+			strcpy (szCode, "");
+			memset (szDate, 0, sizeof (szDate));
+			pInfoItem = m_pRTInfoList->m_lstIndexItem.GetNext (pos);
+			if (!strcmp (pInfoItem->m_szCode, "sh000001"))
+				strcpy (szCode, "sh000001");
+			else if (!strcmp (pInfoItem->m_szCode, "sz399001"))
+				strcpy (szCode, "sz399001");
+			else if (!strcmp (pInfoItem->m_szCode, "sz399006"))
+				strcpy (szCode, "sz399006");
+			if (strlen (szCode) > 0)
+			{
+				nMoney = (int)(atof (pInfoItem->m_szTradeMoney) / 10000);
+				nVolume = (int)(atof (pInfoItem->m_szTradeNum) / 100);
+				strncpy (szDate, pInfoItem->m_szTime, 10);
+
+				sprintf (szLine, "%s,%.2f,%.2f,%.2f,%.2f,%d,%d,%.2f,%.2f,%.2f,%.2f\r\n",
+								 szDate, pInfoItem->m_dOpen, pInfoItem->m_dClose, pInfoItem->m_dMax, pInfoItem->m_dMin,
+								 nVolume, nMoney, pInfoItem->m_dDiffMoney, pInfoItem->m_dDiffRate, 0, 0);
+
+				qcGetAppPath (NULL, szFile, sizeof (szFile));
+				sprintf (szFile, "%sdata\\history\\%s.txt", szFile, szCode);
+				hFile = CreateFile(szFile, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_ALWAYS, (DWORD) 0, NULL);
+				dwWrite = strlen (szLine);
+				SetFilePointer (hFile, 0, NULL, FILE_END);
+				WriteFile (hFile, szLine, strlen (szLine), &dwWrite, NULL);
+				CloseHandle (hFile);
+			}
+		}
+
+	}
 
 	SetWindowText (m_hEdtResult, m_pResultErr);
 	SendMessage (m_hProgress, PBM_SETPOS, (WPARAM) m_nCodeIndex, 0); 
 
+	m_nCodeIndex += m_nCodeStep;
 	if (m_nCodeIndex >= m_nCodeCount)
 		DownLoadFinish ();
 	else
@@ -290,8 +338,11 @@ int CDlgDownLoad::ProcessDownLoadHistory (void)
 	qcGetAppPath (NULL, szFile, sizeof (szFile));
 	if (szCode[0] == '6' || szCode[0] == '9')
 		sprintf (szFile, "%sdata\\history\\sh%s.txt", szFile, szCode);
-	else 
+	else if (szCode[0] == '3' || szCode[0] == '0' || szCode[0] == '2')
 		sprintf (szFile, "%sdata\\history\\sz%s.txt", szFile, szCode);
+	else
+		sprintf (szFile, "%sdata\\history\\%s.txt", szFile, szCode);
+
 	hFile = CreateFile(szFile, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_ALWAYS, (DWORD) 0, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{

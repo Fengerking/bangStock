@@ -99,8 +99,10 @@ char *	CStockFileCode::GetURLFormat (void)
 			pCode = GetCodeNum (i);
 			if (pCode[0] == '6' || pCode[0] == '9')
 				sprintf (szCode, "sh%s", pCode);
-			else
+			else if (pCode[0] == '3' || pCode[0] == '0' || pCode[0] == '2')
 				sprintf (szCode, "sz%s", pCode);
+			else
+				strcpy (szCode, pCode);
 			if (i > 0)
 				strcat (m_pURLFormat, "%2C");
 			strcat (m_pURLFormat, szCode);

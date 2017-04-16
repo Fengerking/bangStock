@@ -23,6 +23,7 @@
 
 #include "resource.h"
 #include "USystemFunc.h"
+#include "ULogFunc.h"
 
 CWndMng::CWndMng(HINSTANCE hInst)
 	: m_hInst (hInst)
@@ -40,7 +41,11 @@ CWndMng::CWndMng(HINSTANCE hInst)
 	, m_pWndDayInfo3 (NULL)
 	, m_pWndDayInfo4 (NULL)
 	, m_pWndCompInfo (NULL)
+	, m_pWndKXTIndex (NULL)
 	, m_nShowWnd (WND_STOCK_KXT_SELECT)
+	, m_nIndexHigh (33)
+	, m_hCursorOld (NULL)
+	, m_hCursorSize (NULL)
 	, m_pStockMng (NULL)
 {
 	m_pRegMng = new CRegMng ("Setting");
@@ -68,6 +73,7 @@ CWndMng::~CWndMng(void)
 	QC_DEL_P (m_pWndDayInfo4);
 
 	QC_DEL_P (m_pWndCompInfo);
+	QC_DEL_P (m_pWndKXTIndex);
 
 	QC_DEL_P (m_pStockMng);
 
@@ -105,6 +111,8 @@ int	CWndMng::OnCreateWnd (HWND hWnd)
 	if (pCode != NULL && strlen (pCode) == 6 && m_pWndRTInfo != NULL)
 		m_pWndRTInfo->SetCode (pCode);
 
+	m_hCursorSize = LoadCursor (NULL, IDC_SIZENS);
+
 	return QC_ERR_NONE;
 }
 
@@ -119,6 +127,8 @@ LRESULT	CWndMng::OnResize (void)
 	SetWindowPos (m_pWndRTInfo->GetWnd (), NULL, rcWnd.left, rcWnd.top, rcWnd.right -rcWnd.left, rcWnd.bottom - rcWnd.top, 0);	
 	rcWnd.right = rcWnd.left;
 	rcWnd.left = 0;
+	if (m_pWndKXTIndex != NULL)
+		rcWnd.bottom = rcWnd.bottom * (100 - m_nIndexHigh) / 100;
 	if (m_nShowWnd == WND_STOCK_FST_KXT)
 	{
 		SetWindowPos (m_pWndDayInfo->GetWnd (), NULL, rcWnd.left, rcWnd.top, rcWnd.right - rcWnd.left, rcWnd.bottom / 2, SWP_NOZORDER);
@@ -130,9 +140,9 @@ LRESULT	CWndMng::OnResize (void)
 		SetWindowPos (m_pWndDayInfo->GetWnd (), NULL, rcWnd.left, rcWnd.top, rcWnd.right - rcWnd.left, rcWnd.bottom, SWP_NOZORDER);
 	}
 	GetClientRect (m_hMainWnd, &rcWnd);
+	if (m_pWndKXTIndex != NULL)
+		rcWnd.bottom = rcWnd.bottom * (100 - m_nIndexHigh) / 100;
 	SetWindowPos (m_pWndSelect->GetWnd (), NULL, rcWnd.left, rcWnd.top, rcWnd.right - rcWnd.left, rcWnd.bottom, SWP_NOZORDER);
-
-	GetClientRect (m_hMainWnd, &rcWnd);
 	if (m_pWndDayInfo1 != NULL)
 	{
 		SetWindowPos (m_pWndDayInfo1->GetWnd (), NULL, rcWnd.left, rcWnd.top, rcWnd.right/2, rcWnd.bottom/2, SWP_NOZORDER);
@@ -148,12 +158,18 @@ LRESULT	CWndMng::OnResize (void)
 		SetWindowPos (m_pWndKXTView->GetWnd (), NULL, rcWnd.left, rcWnd.top, rcWnd.right -rcWnd.left, rcWnd.bottom - rcWnd.top, 0);
 	if (m_pWndKXTSelect != NULL && m_pWndKXTSelect->GetWnd () != NULL)
 		SetWindowPos (m_pWndKXTSelect->GetWnd (), NULL, rcWnd.left, rcWnd.top, rcWnd.right -rcWnd.left, rcWnd.bottom - rcWnd.top, 0);
-
 	if (m_pWndCompInfo != NULL && m_pWndCompInfo->GetWnd () != NULL)
+		SetWindowPos (m_pWndCompInfo->GetWnd (), NULL, rcWnd.left + 200, rcWnd.top, rcWnd.right - rcWnd.left - 400, rcWnd.bottom - rcWnd.top, 0);
+
+	if (m_pWndKXTIndex != NULL && m_pWndKXTIndex->GetWnd () != NULL)
 	{
 		GetClientRect (m_hMainWnd, &rcWnd);
-		SetWindowPos (m_pWndCompInfo->GetWnd (), NULL, rcWnd.left + 200, rcWnd.top, rcWnd.right - rcWnd.left - 400, rcWnd.bottom - rcWnd.top, 0);
+		if (IsWindowVisible (m_pWndRTInfo->GetWnd ()))
+			rcWnd.right = rcWnd.right - m_pWndRTInfo->GetWndWidth ();
+		rcWnd.top = rcWnd.bottom * (100 - m_nIndexHigh) / 100;
+		SetWindowPos (m_pWndKXTIndex->GetWnd (), NULL, rcWnd.left, rcWnd.top, rcWnd.right -rcWnd.left, rcWnd.bottom - rcWnd.top, 0);	
 	}
+
 	return S_FALSE;
 }
 
@@ -163,7 +179,11 @@ void CWndMng::ShowStockWnd (void)
 	ShowWindow (m_pWndDayInfo->GetWnd (), SW_HIDE);
 	ShowWindow (m_pWndKXTInfo->GetWnd (), SW_HIDE);
 	ShowWindow (m_pWndSelect->GetWnd (), SW_HIDE);
-	OnResize ();
+
+	RECT rcWnd;
+	GetClientRect (m_hMainWnd, &rcWnd);
+	if (m_pWndKXTIndex != NULL)
+		rcWnd.bottom = rcWnd.bottom * (100 - m_nIndexHigh) / 100;
 
 	if (m_nShowWnd != WND_STOCK_DAY)
 	{
@@ -241,18 +261,89 @@ void CWndMng::ShowStockWnd (void)
 	}
 	else if (m_nShowWnd == WND_STOCK_KXT_RESEARCH)
 	{
-		RECT rcWnd;
-		GetClientRect (m_hMainWnd, &rcWnd);
 		m_pWndKXTView = new CWndKXTView (m_hInst);
 		m_pWndKXTView->CreateWnd (m_hMainWnd, rcWnd, MSC_BLACK);
 	}
 	else if (m_nShowWnd == WND_STOCK_KXT_SELECT)
 	{
-		RECT rcWnd;
-		GetClientRect (m_hMainWnd, &rcWnd);
 		m_pWndKXTSelect = new CWndKXTSelect (m_hInst);
 		m_pWndKXTSelect->CreateWnd (m_hMainWnd, rcWnd, MSC_BLACK);
 	}
+	OnResize ();
+}
+
+void CWndMng::ShowIndexWnd (int nID)
+{
+	HMENU hMenu = GetSubMenu (GetMenu (m_hMainWnd), 3);
+	for (int i = ID_INDEX_SHANGHAI; i <= ID_INDEX_CHUANGYEB; i++)
+		CheckMenuItem (hMenu, i, MF_UNCHECKED);
+	if (m_nIndexType == nID)
+	{
+		QC_DEL_P (m_pWndKXTIndex);
+		m_nIndexType = 0;
+		OnResize ();
+		return;
+	}
+	m_nIndexType = nID;
+	if (m_pWndKXTIndex == NULL)
+	{
+		m_pWndKXTIndex = new CWndKXTInfo (m_hInst);
+		RECT rcWnd;
+		GetClientRect (m_hMainWnd, &rcWnd);
+		m_pWndKXTIndex->CreateWnd (m_hMainWnd, rcWnd, MSC_BLACK);
+	}
+	if (m_nIndexType == ID_INDEX_SHANGHAI)
+		m_pWndKXTIndex->SetCode ("sh000001");
+	else if (m_nIndexType == ID_INDEX_SHENZHEN)
+		m_pWndKXTIndex->SetCode ("sz399001");
+	else if (m_nIndexType == ID_INDEX_CHUANGYEB)
+		m_pWndKXTIndex->SetCode ("sz399006");
+	else
+		m_pWndKXTIndex->SetCode ("sh000001");
+	
+	CheckMenuItem (hMenu, m_nIndexType, MF_CHECKED);
+
+	OnResize ();
+	return;
+}
+
+LRESULT	CWndMng::OnRButtonDown (UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (m_pWndKXTIndex == NULL)
+		return S_FALSE;
+
+	int nYPos = HIWORD (lParam);
+
+	RECT rcWnd;
+	GetClientRect (m_hMainWnd, &rcWnd);
+	int nYS = rcWnd.bottom * (100 - m_nIndexHigh) / 100 - 32;
+	int nYE = rcWnd.bottom * (100 - m_nIndexHigh) / 100 + 64;
+	if (nYPos > nYS && nYPos < nYE)
+		m_hCursorOld = SetCursor (m_hCursorSize);
+	else
+		m_hCursorOld = NULL;
+
+	return S_OK;
+}
+
+LRESULT	CWndMng::OnRButtonMove (UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (m_pWndKXTIndex == NULL || wParam != MK_LBUTTON)
+		return S_FALSE;
+	RECT rcWnd;
+	GetClientRect (m_hMainWnd, &rcWnd);
+	int nYS = rcWnd.bottom * (100 - m_nIndexHigh) / 100 - 32;
+	int nYE = rcWnd.bottom * (100 - m_nIndexHigh) / 100 + 64;
+
+	int nYPos = HIWORD (lParam);
+	if (nYPos < 100)
+		nYPos = rcWnd.bottom * (100 - m_nIndexHigh) / 100 + nYPos;
+	if (nYPos > nYS && nYPos < nYE)
+	{
+		m_nIndexHigh = (rcWnd.bottom - nYPos) * 100 / rcWnd.bottom;
+		OnResize ();
+	}
+	return S_OK;
 }
 
 LRESULT	CWndMng::OnRButtonUp (UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -288,6 +379,9 @@ LRESULT CWndMng::OnKeyUp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		return S_OK;
 	}
+
+	if (m_pWndKXTIndex != NULL && m_pWndKXTIndex->GetWnd () != NULL)
+		SendMessage (m_pWndKXTIndex->GetWnd (), uMsg, wParam, lParam);
 
 	if (m_nShowWnd == WND_STOCK_KXT || m_nShowWnd == WND_STOCK_FST || m_nShowWnd == WND_STOCK_FST_KXT)
 	{
@@ -411,11 +505,21 @@ LRESULT CWndMng::OnReceiveMessage (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
 	case WM_LBUTTONDOWN:
 		if (m_pWndCompInfo != NULL && m_pWndCompInfo->GetWnd () != NULL)
 			m_pWndCompInfo->Close ();
+		OnRButtonDown (uMsg, wParam, lParam);
 		break;
 
 	case WM_RBUTTONUP:
+		if (m_hCursorOld != NULL)
+		{
+			SetCursor (m_hCursorOld);
+			m_hCursorOld = NULL;
+		}
 		OnRButtonUp (uMsg, wParam, lParam);
 		return S_OK;
+
+	case WM_MOUSEMOVE:
+		OnRButtonMove (uMsg, wParam, lParam);
+		break;
 
 	case WM_MOUSEWHEEL:
 		if (m_pWndCompInfo != NULL && m_pWndCompInfo->GetWnd () != NULL)
@@ -547,6 +651,12 @@ LRESULT CWndMng::OnReceiveMessage (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
 			CDlgStockInfo dlgInfo (m_hInst, m_hMainWnd);
 			dlgInfo.OpenDlg (m_pWndRTInfo->GetCode ());
 		}
+			break;
+
+		case ID_INDEX_SHANGHAI:
+		case ID_INDEX_SHENZHEN:
+		case ID_INDEX_CHUANGYEB:
+			ShowIndexWnd (wmId);
 			break;
 
 		default:

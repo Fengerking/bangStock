@@ -567,6 +567,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\Stock\CStockAnalyseBuy00.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Stock\CStockAnalyseBuy00.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\Stock\CStockAnalyseBuy01.cpp"
 					>
 				</File>

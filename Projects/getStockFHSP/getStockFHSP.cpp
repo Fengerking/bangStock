@@ -2,14 +2,20 @@
 //
 
 #include "stdafx.h"
+#include "math.h"
+
 #include "getStockFHSP.h"
 
 #include "CHttpUtil.h"
+#include "CStockKXTInfo.h"
+
 #include "CStockFileCode.h"
 #include "CStockFileFHSP.h"
 #include "CStockFileFinance.h"
 #include "CStockFileCompInfo.h"
 #include "CStockFileHYGN.h"
+
+#include "USystemFunc.h"
 
 #define MAX_LOADSTRING 100
 
@@ -30,6 +36,8 @@ ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
+
+int					ParserIndexHistData (void);
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
@@ -113,8 +121,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	g_pCodeList = new CStockFileCode ();
 	g_pCodeList->Open ("codeList.txt");
 
-	CStockFileFHSP filFHSP;
-	filFHSP.Open ("300400", true);
+	ParserIndexHistData ();		
+
+//	CStockFileFHSP filFHSP;
+//	filFHSP.Open ("300400", true);
 
 //	CStockFileFinance	filFinance;
 //	filFinance.Open ("600477", false);
@@ -221,4 +231,114 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	return (INT_PTR)FALSE;
+}
+
+int ParserIndexHistData (void)
+{
+	char m_szPath[256];
+
+	strcpy (m_szPath, "c:\\work\\temp\\399006.csv");
+
+	CFileIO * pFile = new CFileIO ();
+	if (pFile->Open (m_szPath, 0, QCIO_FLAG_READ) != QC_ERR_NONE)
+	{
+		delete pFile;
+		return QC_ERR_FAILED;
+	}
+	int nSize = (int)pFile->GetSize ();
+	char * pData = new char[nSize];
+	pFile->Read ((unsigned char *)pData, nSize, true, 0);
+
+	SYSTEMTIME				tmDate;
+	memset (&tmDate, 0, sizeof (SYSTEMTIME));
+
+	CObjectList <qcStockKXTInfoItem> m_lstItem;
+
+	qcStockKXTInfoItem *	pItem = NULL;
+	char *					pNum = NULL;
+	char *					pE = NULL;
+	double					dE = 0;
+	int						nE = 0;
+	char					szLine[256];
+	int						nRest = nSize;
+	char *					pBuff = pData;
+	int						nLine = qcReadTextLine (pBuff, nRest, szLine, sizeof (szLine));
+	pBuff +=  nLine;
+	nRest -= nLine;
+	while (nRest > 0)
+	{
+		nLine = qcReadTextLine (pBuff, nRest, szLine, sizeof (szLine));		
+		if (nLine <= 0)
+			break;
+		pBuff +=  nLine;
+		nRest -= nLine;
+
+		sscanf (szLine, "%d-%d-%d", &tmDate.wYear, &tmDate.wMonth, &tmDate.wDay);
+		if (tmDate.wYear < 2000)
+			break;
+		pItem = new qcStockKXTInfoItem ();
+		memset (pItem, 0, sizeof (qcStockKXTInfoItem));
+		m_lstItem.AddTail (pItem);
+		pItem->m_nYear = tmDate.wYear; pItem->m_nMonth = tmDate.wMonth; pItem->m_nDay = tmDate.wDay; 
+
+		pNum = szLine;
+		while (*pNum != ',') {pNum++;if (pNum-szLine > nLine) return QC_ERR_FAILED;}pNum++;
+		while (*pNum != ',') {pNum++;if (pNum-szLine > nLine) return QC_ERR_FAILED;}pNum++;
+		while (*pNum != ',') {pNum++;if (pNum-szLine > nLine) return QC_ERR_FAILED;}pNum++;
+		pItem->m_dClose = atof (pNum);	
+		while (*pNum != ',') {pNum++;if (pNum-szLine > nLine) return QC_ERR_FAILED;}pNum++;
+		pItem->m_dMax = atof (pNum);	
+		while (*pNum != ',') {pNum++;if (pNum-szLine > nLine) return QC_ERR_FAILED;}pNum++;
+		pItem->m_dMin = atof (pNum);	
+		while (*pNum != ',') {pNum++;if (pNum-szLine > nLine) return QC_ERR_FAILED;}pNum++;
+		pItem->m_dOpen = atof (pNum);	
+		while (*pNum != ',') {pNum++;if (pNum-szLine > nLine) return QC_ERR_FAILED;}pNum++;
+		while (*pNum != ',') {pNum++;if (pNum-szLine > nLine) return QC_ERR_FAILED;}pNum++;
+		pItem->m_dDiffNum = atof (pNum);		
+		while (*pNum != ',') {pNum++;if (pNum-szLine > nLine) return QC_ERR_FAILED;}pNum++;
+		pItem->m_dDiffRate = atof (pNum);		
+		while (*pNum != ',') {pNum++;if (pNum-szLine > nLine) return QC_ERR_FAILED;}pNum++;
+		pItem->m_nVolume = (int)(atof (pNum) / 100);		
+		while (*pNum != ',') {pNum++;if (pNum-szLine > nLine) return QC_ERR_FAILED;}pNum++;
+		pE = strchr (pNum, 'e');
+		if (pE == NULL)
+			pItem->m_nMoney = atoi (pNum);
+		else
+		{
+			*pE = 0;
+			dE = atof (pNum);
+			pE++; pE++;
+			nE = atoi (pE);
+			pItem->m_nMoney = (int)(dE * pow (10.0, (nE - 4)));
+		}
+	}
+
+	qcGetAppPath (NULL, m_szPath, sizeof (m_szPath));
+	sprintf (m_szPath, "%sdata\\history\\%s.txt", m_szPath, "sz399006");
+
+	CFileIO filIO;
+	if (filIO.Open (m_szPath, 0, QCIO_FLAG_WRITE) != QC_ERR_NONE)
+		return -1;
+
+	strcpy (szLine, "日期,开盘,收盘,最高,最低,交易量(手),交易金额(元),涨跌额,涨跌幅(%),振幅(%),换手率(%)\r\n");
+	filIO.Write ((unsigned char *)szLine, strlen (szLine));
+
+	NODEPOS					pos = m_lstItem.GetTailPosition ();
+	while (pos != NULL)
+	{
+		pItem = m_lstItem.GetPrev (pos);
+		sprintf (szLine, "%d-%02d-%02d,%.2f,%.2f,%.2f,%.2f,%d,%d,%.2f,%.2f,%.2f,%.2f\r\n",
+						 pItem->m_nYear, pItem->m_nMonth, pItem->m_nDay, pItem->m_dOpen, pItem->m_dClose, pItem->m_dMax, pItem->m_dMin,
+						 pItem->m_nVolume, pItem->m_nMoney, pItem->m_dDiffNum, pItem->m_dDiffRate, pItem->m_dSwing, pItem->m_dExchange);
+		filIO.Write ((unsigned char *)szLine, strlen (szLine));
+	}
+	filIO.Close ();
+
+	pItem = m_lstItem.RemoveHead ();
+	while (pItem != NULL)
+	{
+		delete pItem;
+		pItem = m_lstItem.RemoveHead ();
+	}
+	return 0;
 }

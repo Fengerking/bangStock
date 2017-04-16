@@ -35,8 +35,10 @@ int CStockFileHist::SetCode (char * pCode)
 	qcGetAppPath (NULL, m_szPath, sizeof (m_szPath));
 	if (pCode[0] == '6' || pCode[0] == '9')
 		sprintf (m_szPath, "%sdata\\history\\sh%s.txt", m_szPath, pCode);
-	else 
+	else if (pCode[0] == '3' || pCode[0] == '0' || pCode[0] == '2')
 		sprintf (m_szPath, "%sdata\\history\\sz%s.txt", m_szPath, pCode);
+	else 
+		sprintf (m_szPath, "%sdata\\history\\%s.txt", m_szPath, pCode);
 
 	CFileIO * pFile = new CFileIO ();
 	if (pFile->Open (m_szPath, 0, QCIO_FLAG_READ) != QC_ERR_NONE)

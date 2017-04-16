@@ -28,6 +28,7 @@ CDlgStockSelect::CDlgStockSelect(HINSTANCE hInst, HWND hParent)
 	, m_pCodeList (NULL)
 	, m_pWndKXT (NULL)
 	, m_pBuy01 (NULL)
+	, m_pBuy00 (NULL)
 	, m_nTimerAnalyse (0)
 {
 }
@@ -35,6 +36,7 @@ CDlgStockSelect::CDlgStockSelect(HINSTANCE hInst, HWND hParent)
 CDlgStockSelect::~CDlgStockSelect(void)
 {
 	QC_DEL_P (m_pCodeList);
+	QC_DEL_P (m_pBuy01);
 	QC_DEL_P (m_pBuy01);
 }
 
@@ -124,9 +126,14 @@ int CDlgStockSelect::OpenSelectFile (char * pFile)
 
 int CDlgStockSelect::OnInitDlg (void)
 {
-	RECT rcWnd;
+	int		nScreenX = GetSystemMetrics (SM_CXSCREEN);
+	RECT	rcWnd;
 	GetWindowRect (GetParent (m_hParent), &rcWnd);
-	SetWindowPos (m_hDlg, NULL, rcWnd.right, rcWnd.top, 0, 0, SWP_NOSIZE);
+
+	if (nScreenX < rcWnd.right + 30)
+		SetWindowPos (m_hDlg, NULL, rcWnd.right - 500, rcWnd.top + 300, 0, 0, SWP_NOSIZE);
+	else
+		SetWindowPos (m_hDlg, NULL, rcWnd.right, rcWnd.top, 0, 0, SWP_NOSIZE);
 
 	InitParam ();
 
@@ -212,27 +219,59 @@ bool CDlgStockSelect::OnSelectStock1 (void)
 	return true;
 }
 
+bool CDlgStockSelect::OnSelectStock0 (void)
+{
+	if (m_pBuy00 == NULL)
+		m_pBuy00 = new CStockAnalyseBuy00 ();
+
+	SYSTEMTIME tmStart, tmEnd;
+	GetLocalTime (&tmEnd);
+	GetLocalTime (&tmStart);
+	tmStart.wYear -= 2;
+	m_pBuy00->SetStartEndDate (&tmStart, &tmEnd);
+
+	if (m_pBuy00->Init ("codeList.txt") != QC_ERR_NONE)
+		return false;
+
+	SendMessage (GetDlgItem (m_hDlg, IDC_PROGRESS_STATUS), PBM_SETRANGE, 0, MAKELPARAM(0, m_pBuy00->GetTotalNum ())); 
+	SendMessage (GetDlgItem (m_hDlg, IDC_PROGRESS_STATUS), PBM_SETSTEP, (WPARAM) 1, 0); 
+	SendMessage (GetDlgItem (m_hDlg, IDC_PROGRESS_STATUS), PBM_SETPOS, (WPARAM) 0, 0); 
+	SendMessage (GetDlgItem (m_hDlg, IDC_LIST_STOCK), LB_RESETCONTENT, 0, 0);
+	SetWindowText (GetDlgItem (m_hDlg, IDC_BUTTON_PAUSE0), "ÔÝ Í£");
+
+	if (m_nTimerAnalyse == 0)
+		m_nTimerAnalyse = SetTimer (m_hDlg, WM_TIMER_ANALYSE, 10, NULL);
+
+	return true;
+}
+
 bool CDlgStockSelect::OnTimer (WPARAM wParam, LPARAM lParam)
 {
 //	m_nTimerAnalyse = SetTimer (m_hDlg, WM_TIMER_ANALYSE, 10, NULL);
-	if (m_pBuy01 == NULL)
+	if (m_pBuy01 == NULL && m_pBuy00 == NULL)
 		return false;
-	if (m_pBuy01->Analyse (true) == QC_ERR_FINISH)
+
+	CStockAnalyseBase * pBuy = m_pBuy01;
+	if (pBuy == NULL)
+		pBuy = m_pBuy00;
+	if (pBuy->Analyse (true) == QC_ERR_FINISH)
 	{
 		KillTimer (m_hDlg, m_nTimerAnalyse);
 		m_nTimerAnalyse = 0;
 		SetWindowText (GetDlgItem (m_hDlg, IDC_BUTTON_PAUSE), "ÔÝ Í£");
+		SetWindowText (GetDlgItem (m_hDlg, IDC_BUTTON_PAUSE0), "ÔÝ Í£");
+		QC_DEL_P (m_pBuy01);
+		QC_DEL_P (m_pBuy00);
 		MessageBox (m_hDlg, "Analyse stock finished!", "Information", MB_OK);
+		return true;
 	}
 	else
 	{
-		SendMessage (GetDlgItem (m_hDlg, IDC_PROGRESS_STATUS), PBM_SETPOS, (WPARAM)m_pBuy01->GetCurIndex (), 0); 
+		SendMessage (GetDlgItem (m_hDlg, IDC_PROGRESS_STATUS), PBM_SETPOS, (WPARAM)pBuy->GetCurIndex (), 0); 
 	}
 	int nSelected = SendMessage (GetDlgItem (m_hDlg, IDC_LIST_STOCK), LB_GETCOUNT, 0, 0);
-	if (nSelected < m_pBuy01->GetResultCount ())
-	{
-		SendMessage (GetDlgItem (m_hDlg, IDC_LIST_STOCK), LB_ADDSTRING, 0, (LPARAM)m_pBuy01->GetResultCode (nSelected));
-	}
+	if (nSelected < pBuy->GetResultCount ())
+		SendMessage (GetDlgItem (m_hDlg, IDC_LIST_STOCK), LB_ADDSTRING, 0, (LPARAM)pBuy->GetResultCode (nSelected));
 
 	return true;
 }
@@ -346,17 +385,21 @@ INT_PTR CDlgStockSelect::OnReceiveMsg (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 		case IDC_BUTTON_SELECT1:
 			OnSelectStock1 ();
 			break;
+		case IDC_BUTTON_SELECT0:
+			OnSelectStock0 ();
+			break;
 
 		case IDC_BUTTON_PAUSE:
+		case IDC_BUTTON_PAUSE0:
 			if (m_nTimerAnalyse != 0)
 			{
 				KillTimer (m_hDlg, m_nTimerAnalyse);
 				m_nTimerAnalyse = 0;
-				SetWindowText (GetDlgItem (m_hDlg, IDC_BUTTON_PAUSE), "¼Ì Ðø");
+				SetWindowText (GetDlgItem (m_hDlg, wmId), "¼Ì Ðø");
 			}
 			else
 			{
-				SetWindowText (GetDlgItem (m_hDlg, IDC_BUTTON_PAUSE), "ÔÝ Í£");
+				SetWindowText (GetDlgItem (m_hDlg, wmId), "ÔÝ Í£");
 				m_nTimerAnalyse = SetTimer (m_hDlg, WM_TIMER_ANALYSE, 10, NULL);
 			}
 			break;

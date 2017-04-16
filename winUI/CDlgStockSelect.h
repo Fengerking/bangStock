@@ -17,6 +17,7 @@
 #include "CWndKXTInfo.h"
 #include "CStockFileCode.h"
 #include "CStockAnalyseBuy01.h"
+#include "CStockAnalyseBuy00.h"
 
 class CDlgStockSelect : public CDlgBase
 {
@@ -36,6 +37,8 @@ protected:
 	virtual int			OnInitDlg (void);
 
 	bool				OnSelectStock1 (void);
+	bool				OnSelectStock0 (void);
+
 	bool				OnTimer (WPARAM wParam, LPARAM lParam);
 	bool				UpdateKXTView (void);
 	void				InitParam (void);
@@ -49,6 +52,7 @@ protected:
 	int						m_nTimerAnalyse;
 	CStockAnalyseBuy01 *	m_pBuy01;
 
+	CStockAnalyseBuy00 *	m_pBuy00;
 
 	CWndKXTInfo *			m_pWndKXT;
 

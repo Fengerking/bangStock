@@ -36,6 +36,8 @@ protected:
 	virtual int		UpdateTodayLineMACD (void);
 	virtual void	ReleaseData (void);
 
+	virtual void	DumpToFile (void);
+
 public:
 	CObjectList<qcStockKXTInfoItem>	m_lstItem;
 

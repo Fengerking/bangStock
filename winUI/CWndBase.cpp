@@ -136,6 +136,10 @@ LRESULT CWndBase::OnReceiveMessage (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
 		}
 		break;
 
+	case WM_MOUSEMOVE:
+		PostMessage (m_hParent, uMsg, wParam, lParam);
+		break;
+
 	case WM_TIMER:
 		if (wParam == WM_TIMER_LBUTTONCLICK)
 		{

@@ -28,7 +28,7 @@ public:
 	CWndKXTInfo(HINSTANCE hInst);
 	virtual ~CWndKXTInfo(void);
 
-	virtual int		SetSource (int nSource);
+	virtual int		SetSource (int nSource, char * pCode);
 	virtual int		SetCode (char * pCode);
 	virtual char *	GetCode (void) {return m_szCode;}
 	virtual int		SetStartEndDate (long long llStartDate, long long llEndDate);

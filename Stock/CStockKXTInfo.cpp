@@ -33,7 +33,7 @@ CStockKXTInfo::CStockKXTInfo(void)
 	SetObjectName ("CStockKXTInfo");
 	memset (m_szStartDate, 0, sizeof (m_szStartDate));
 	memset (m_szEndDate, 0, sizeof (m_szEndDate));
-	strcpy (m_szStartDate, "20140105");
+	strcpy (m_szStartDate, "20000101");
 
 	m_llStartDate = 0;
 	SYSTEMTIME tmNow;
@@ -94,8 +94,13 @@ int CStockKXTInfo::Update (void)
 		pItem->m_dMin = GetDblValue (pItemNode, "min");
 		pItem->m_dClose = GetDblValue (pItemNode, "close");
 		pItem->m_nVolume = GetIntValue (pItemNode, "volumn");
-	}
 
+		pItem->m_nMoney = 0;		
+		pItem->m_dDiffNum = 0;		
+		pItem->m_dDiffRate = 0;		
+		pItem->m_dSwing = 0;
+		pItem->m_dExchange = 0;	
+	}
 	UpdateWithFHSP ();
 	UpdateMaxMinPrice ();
 	CreateDayLineMACD ();	
@@ -152,7 +157,9 @@ int CStockKXTInfo::SetDaysNum (int nDay5, int nDay10, int nDay20, int nDay30, in
 
 void CStockKXTInfo::UpdateWithFHSP (void)
 {
-	int nChuFuQuan = CRegMng::g_pRegMng->GetIntValue ("ChuFuQuan", 1);
+	int nChuFuQuan = 1;
+	if (CRegMng::g_pRegMng != NULL)
+		nChuFuQuan = CRegMng::g_pRegMng->GetIntValue ("ChuFuQuan", 1);
 	if (nChuFuQuan == 0)
 		return;
 
@@ -479,4 +486,31 @@ void CStockKXTInfo::ReleaseData (void)
 		delete pItem;
 		pItem = m_lstItem.RemoveHead ();
 	}
+}
+
+void CStockKXTInfo::DumpToFile (void)
+{
+	qcGetAppPath (NULL, m_szPath, sizeof (m_szPath));
+	if (m_szCode[0] == '6' || m_szCode[0] == '9')
+		sprintf (m_szPath, "%sdata\\history\\sh%s.txt", m_szPath, m_szCode);
+	else if (m_szCode[0] == '3' || m_szCode[0] == '0' || m_szCode[0] == '2')
+		sprintf (m_szPath, "%sdata\\history\\sz%s.txt", m_szPath, m_szCode);
+	else 
+		sprintf (m_szPath, "%sdata\\history\\%s.txt", m_szPath, m_szCode);
+
+	CFileIO filIO;
+	if (filIO.Open (m_szPath, 0, QCIO_FLAG_WRITE) != QC_ERR_NONE)
+		return;
+	char					szLine[1024];
+	qcStockKXTInfoItem *	pItem = NULL;
+	NODEPOS					pos = m_lstItem.GetHeadPosition ();
+	while (pos != NULL)
+	{
+		pItem = m_lstItem.GetNext (pos);
+		sprintf (szLine, "%d-%02d-%02d,%.2f,%.2f,%.2f,%.2f,%d,%d,%.2f,%.2f,%.2f,%.2f\r\n",
+						 pItem->m_nYear, pItem->m_nMonth, pItem->m_nDay, pItem->m_dOpen, pItem->m_dClose, pItem->m_dMax, pItem->m_dMin,
+						 pItem->m_nVolume, pItem->m_nMoney, pItem->m_dDiffNum, pItem->m_dDiffRate, pItem->m_dSwing, pItem->m_dExchange);
+		filIO.Write ((unsigned char *)szLine, strlen (szLine));
+	}
+	filIO.Close ();
 }

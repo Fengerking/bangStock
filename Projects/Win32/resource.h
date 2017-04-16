@@ -90,6 +90,8 @@
 #define IDC_BUTTON_PAUSE                1050
 #define IDC_CHECK_LINE20                1051
 #define IDC_BUTTON_SELL                 1051
+#define IDC_BUTTON_PAUSE2               1051
+#define IDC_BUTTON_PAUSE0               1051
 #define IDC_COMBO_LINE20                1052
 #define IDC_CHECK_LINE30                1053
 #define IDC_COMBO_YEAR                  1053
@@ -117,7 +119,7 @@
 #define IDC_LIST_MYSTOCK                1070
 #define IDC_BUTTON_FILE                 1071
 #define IDC_BUTTON_SELECT1              1072
-#define IDC_BUTTON_SELECT3              1073
+#define IDC_BUTTON_SELECT0              1073
 #define ID_KXPic                        32773
 #define ID_VIEW_KXPIC                   32774
 #define ID_VIEW_FSPIC                   32775
@@ -148,6 +150,12 @@
 #define ID_32805                        32805
 #define ID_FILE_STOCK_SELECT            32806
 #define ID_FILE_STOCK_BUY               32807
+#define ID_32808                        32808
+#define ID_32809                        32809
+#define ID_32810                        32810
+#define ID_INDEX_SHANGHAI               32811
+#define ID_INDEX_SHENZHEN               32812
+#define ID_INDEX_CHUANGYEB              32813
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -156,7 +164,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        139
-#define _APS_NEXT_COMMAND_VALUE         32808
+#define _APS_NEXT_COMMAND_VALUE         32814
 #define _APS_NEXT_CONTROL_VALUE         1074
 #define _APS_NEXT_SYMED_VALUE           110
 #endif

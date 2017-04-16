@@ -127,8 +127,6 @@ int CStockRTInfo::Update (void)
 		pInfoItem->m_dMin = GetDblValue (pIndexItem, "minPrice");
 		pInfoItem->m_dDiffRate = GetDblValue (pIndexItem, "diff_rate");
 		pInfoItem->m_dDiffMoney = GetDblValue (pIndexItem, "diff_money");
-		pInfoItem->m_szTradeNum[32];
-		pInfoItem->m_szTradeMoney[32];
 	}
 	return nRC;
 }
