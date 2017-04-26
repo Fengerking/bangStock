@@ -188,7 +188,10 @@ int CDlgDownLoad::ProcessDownLoadToday (void)
 		m_pRTInfoList->SetNeedIndex (false);
 	int nRC = m_pRTInfoList->SetCode (m_szCodeList);
 	if (nRC != QC_ERR_NONE)
+	{
+		MessageBox (m_hDlg, "Try to download stock info failed!", "Error", MB_OK);
 		return nRC;
+	}
 
 	char		szLine[1024];
 	char		szFile[256];
