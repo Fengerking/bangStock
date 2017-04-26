@@ -190,7 +190,7 @@ int CDlgDownLoad::ProcessDownLoadToday (void)
 	if (nRC != QC_ERR_NONE)
 		return nRC;
 
-	char		szLine[256];
+	char		szLine[1024];
 	char		szFile[256];
 	DWORD		dwWrite = 0;
 	FILETIME	tmFile;
@@ -292,12 +292,29 @@ int CDlgDownLoad::ProcessDownLoadToday (void)
 				strncpy (szDate, pInfoItem->m_szTime, 10);
 
 				sprintf (szLine, "%s,%.2f,%.2f,%.2f,%.2f,%d,%d,%.2f,%.2f,%.2f,%.2f\r\n",
-								 szDate, pInfoItem->m_dOpen, pInfoItem->m_dClose, pInfoItem->m_dMax, pInfoItem->m_dMin,
+								 szDate, pInfoItem->m_dOpen, pInfoItem->m_dNow, pInfoItem->m_dMax, pInfoItem->m_dMin,
 								 nVolume, nMoney, pInfoItem->m_dDiffMoney, pInfoItem->m_dDiffRate, 0, 0);
 
 				qcGetAppPath (NULL, szFile, sizeof (szFile));
 				sprintf (szFile, "%sdata\\history\\%s.txt", szFile, szCode);
 				hFile = CreateFile(szFile, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_ALWAYS, (DWORD) 0, NULL);
+
+				GetFileTime (hFile, NULL, NULL, &tmFile);
+				FileTimeToSystemTime (&tmFile, &tmSys);
+				tmSys.wHour += m_nOffsetHour;
+				if (tmSys.wDay == tmNow.wDay)
+				{
+					if (tmSys.wHour > 15)
+					{
+						CloseHandle (hFile);
+						strcat (m_pResultErr, pItem->m_szCode);
+						strcat (m_pResultErr, "  had updated today. \r\n");
+						strcat (m_pResultLog, pItem->m_szCode);
+						strcat (m_pResultLog, "  had updated today. \r\n");
+						continue;
+					}
+				}
+				
 				dwWrite = strlen (szLine);
 				SetFilePointer (hFile, 0, NULL, FILE_END);
 				WriteFile (hFile, szLine, strlen (szLine), &dwWrite, NULL);

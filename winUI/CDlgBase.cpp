@@ -101,7 +101,7 @@ INT_PTR CALLBACK CDlgBase::baseDlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 		break;
 
 	case WM_ERASEBKGND:
-		if (pDlgBase->m_hBrushBG != NULL)
+		if (pDlgBase != NULL && pDlgBase->m_hBrushBG != NULL)
 		{
 			RECT	rcDlg;
 			GetClientRect (hDlg, &rcDlg);

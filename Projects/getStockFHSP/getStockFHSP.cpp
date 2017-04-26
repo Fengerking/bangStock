@@ -121,7 +121,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	g_pCodeList = new CStockFileCode ();
 	g_pCodeList->Open ("codeList.txt");
 
-	ParserIndexHistData ();		
+//	ParserIndexHistData ();		
 
 //	CStockFileFHSP filFHSP;
 //	filFHSP.Open ("300400", true);
@@ -137,8 +137,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 //	SetTimer (hWnd, 101, 10, NULL);
 
-//	char * pData = NULL;
-//	int nRC = g_pHTTPUtil->RequestData ("http://vip.stock.finance.sina.com.cn/corp/go.php/vISSUE_ShareBonus/stockid/300316.phtml", &pData);
+	char * pData = NULL;
+	g_pHTTPUtil = new CHttpUtil ();
+	int nRC = g_pHTTPUtil->RequestData ("https://www.baidu.com/index.html", &pData);
 
 //	filIO.Open ("c:\\work\\Temp\\300316.txt", 0, QCIO_FLAG_WRITE);
 //	filIO.Write ((unsigned char *)pData, strlen (pData));

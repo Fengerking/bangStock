@@ -24,7 +24,7 @@ public:
     virtual ~CJsonItem(void);
 
 public:
-	char			m_szName[32];
+	char			m_szName[128];
 	char *			m_pValue;
 	CJsonNode *		m_pChild;
 };
@@ -39,7 +39,7 @@ public:
 	virtual void	AddNode (CJsonNode * pNode) {m_lstNode.AddTail (pNode);}
 
 public:
-	char					m_szName[32];
+	char					m_szName[128];
 	CObjectList<CJsonItem>	m_lstItem;
 	CObjectList<CJsonNode>	m_lstNode;	
 };
