@@ -24,7 +24,7 @@ CWndRTInfo::CWndRTInfo(HINSTANCE hInst)
 	, m_hEdtCode (NULL)
 	, m_bNeedUpdate (false)
 	, m_pRTInfo (NULL)
-	, m_nFirstValume (0)
+	, m_nLastValume (0)
 {
 	_tcscpy (m_szClassName, _T("bangStockRTWindow"));
 	_tcscpy (m_szWindowName, _T("bangStockRTWindow"));
@@ -59,7 +59,7 @@ int CWndRTInfo::UpdateView (HDC hDC)
 		if (m_pRTInfo == NULL || hDC == NULL)
 			return QC_ERR_STATUS;
 		if (strcmp (m_szCode, m_pRTInfo->m_rtItem.m_szCode))
-			m_nFirstValume = 0;
+			m_nLastValume = 0;
 		if (m_pRTInfo->SetCode (m_szCode) != QC_ERR_NONE)
 		{
 			char szErr[256];
@@ -68,13 +68,15 @@ int CWndRTInfo::UpdateView (HDC hDC)
 			//MessageBox (m_hParent, szErr, "Error", MB_OK);
 			//return QC_ERR_FAILED;
 		}
+
+		QCLOGT ("CWndRTInfo", "Num = % 8d,   All = % 8d", m_pRTInfo->m_rtItem.m_nTradeNum, m_pRTInfo->m_rtItem.m_nAllNum);
+
 		m_dClosePrice = m_pRTInfo->m_rtItem.m_dClosePrice;
 		sTradeHistory * pItem = new sTradeHistory ();
 		GetLocalTime (&pItem->sTime);
 		pItem->dPrice = m_pRTInfo->m_rtItem.m_dNowPrice;
-		pItem->nNumber = m_pRTInfo->m_rtItem.m_nTradeNum - m_nFirstValume;
-		if (m_nFirstValume == 0)
-			m_nFirstValume = pItem->nNumber;
+		pItem->nNumber = m_pRTInfo->m_rtItem.m_nTradeNum - m_nLastValume;
+		m_nLastValume = m_pRTInfo->m_rtItem.m_nTradeNum;
 		m_lstHistory.AddHead (pItem);
 		SendMessage (m_hParent, WM_MSG_NEW_PRICE, (WPARAM)&m_pRTInfo->m_rtItem, NULL);
 		ShowIndexInfo ();

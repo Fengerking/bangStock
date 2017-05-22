@@ -54,7 +54,7 @@ protected:
 	bool						m_bNeedUpdate;
 	CStockRTInfo *				m_pRTInfo;
 	CObjectList <sTradeHistory>	m_lstHistory;
-	int							m_nFirstValume;
+	int							m_nLastValume;
 
 	char						m_szKeyCode[32];
 };
