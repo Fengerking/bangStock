@@ -79,15 +79,25 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	int		nScreenY = GetSystemMetrics (SM_CYSCREEN);
 	HWND	hWnd = NULL;
 
+	int		nW = 1600;
+	int		nH = 900;
+	if (nW > nScreenX)
+		nW = nScreenX;
+	if (nH > nScreenY)
+		nH = nScreenY;
+
 	hInst = hInstance; // Store instance handle in our global variable
 	hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW, 
-						0, 0, 1600, 900, NULL, NULL, hInstance, NULL);
+						0, 0, nW, nH, NULL, NULL, hInstance, NULL);
 	if (!hWnd)
 		return FALSE;
 	
 	RECT rcWnd;
 	GetClientRect (hWnd, &rcWnd);
-	SetWindowPos (hWnd, HWND_BOTTOM, (nScreenX - rcWnd.right) / 2, (nScreenY - rcWnd.bottom) / 2 - 60, rcWnd.right, rcWnd.bottom, 0);
+	int nTop = (nScreenY - rcWnd.bottom) / 2 - 60;
+	if (nTop < 0)
+		nTop = 0;
+	SetWindowPos (hWnd, HWND_BOTTOM, (nScreenX - rcWnd.right) / 2, nTop, rcWnd.right, rcWnd.bottom, 0);
 //	SetWindowPos (hWnd, HWND_BOTTOM, 0, 0, nScreenX, nScreenY, 0);
 
 	g_pWndMng = new CWndMng (hInst);
