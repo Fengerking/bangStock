@@ -149,7 +149,7 @@ int CDataJson::ParseNode (char * pData, CJsonNode * pNode)
 						return 0;
 				}
 			}
-			pItem->m_pValue = new char[pNext - pPos] + 2;
+			pItem->m_pValue = new char[pNext - pPos + 2];
 			memset (pItem->m_pValue, 0, (pNext - pPos) + 2);
 			if (pNext - pPos > 0)
 				strncpy (pItem->m_pValue, pPos, pNext - pPos);
