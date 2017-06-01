@@ -132,14 +132,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //	CStockFileCompInfo	filCompInfo;
 //	filCompInfo.Open ("600895", true);
 
-//	CStockFileHYGN	filHYGN;
-//	filHYGN.Open ("600895", false);
+	CStockFileHYGN	filHYGN;
+	filHYGN.Open ("600895", false);
 
 //	SetTimer (hWnd, 101, 10, NULL);
 
-	char * pData = NULL;
-	g_pHTTPUtil = new CHttpUtil ();
-	int nRC = g_pHTTPUtil->RequestData ("https://www.baidu.com/index.html", &pData);
 
 //	filIO.Open ("c:\\work\\Temp\\300316.txt", 0, QCIO_FLAG_WRITE);
 //	filIO.Write ((unsigned char *)pData, strlen (pData));

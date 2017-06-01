@@ -133,7 +133,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="curllib.lib Ws2_32.lib"
+				AdditionalDependencies="libcurl.lib Ws2_32.lib"
 				OutputFile="..\..\Bin\Win32\$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Libcurl\lib"
