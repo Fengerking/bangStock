@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{978A0F73-BF84-4823-AB84-251A394CC8CF}</ProjectGuid>
+    <RootNamespace>bangStock</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\..\Base;..\..\Include;..\..\Http;..\..\Stock;..\..\Libcurl\include;..\..\winUI;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;__QC_OS_WIN32__;_QCLOG_ERROR;_QCLOG_WARNING;_QCLOG_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4096;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libcurl.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>..\..\Bin\Win32\bangStock.exe</OutputFile>
+      <AdditionalLibraryDirectories>..\..\Libcurl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(SolutionDir)$(Configuration)$(TargetName).pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Base\CBaseIO.cpp" />
+    <ClCompile Include="..\..\Base\CBaseObject.cpp" />
+    <ClCompile Include="..\..\Base\CDNSCache.cpp" />
+    <ClCompile Include="..\..\Base\CFileIO.cpp" />
+    <ClCompile Include="..\..\Base\CHTTPClient.cpp" />
+    <ClCompile Include="..\..\Base\CMsgMng.cpp" />
+    <ClCompile Include="..\..\Base\CMutexLock.cpp" />
+    <ClCompile Include="..\..\Base\CNodeList.cpp" />
+    <ClCompile Include="..\..\Base\CRegMng.cpp" />
+    <ClCompile Include="..\..\Base\CThreadWork.cpp" />
+    <ClCompile Include="..\..\Base\ULogFunc.c" />
+    <ClCompile Include="..\..\Base\UMsgMng.cpp" />
+    <ClCompile Include="..\..\Base\USystemFunc.cpp" />
+    <ClCompile Include="..\..\Base\UThreadFunc.cpp" />
+    <ClCompile Include="..\..\Base\UUrlParser.cpp" />
+    <ClCompile Include="..\..\Http\CHttpUtil.cpp" />
+    <ClCompile Include="..\..\Stock\CDataJson.cpp" />
+    <ClCompile Include="..\..\Stock\CStockAnalyseBase.cpp" />
+    <ClCompile Include="..\..\Stock\CStockAnalyseBuy00.cpp" />
+    <ClCompile Include="..\..\Stock\CStockAnalyseBuy01.cpp" />
+    <ClCompile Include="..\..\Stock\CStockAnalyseSell01.cpp" />
+    <ClCompile Include="..\..\Stock\CStockBase.cpp" />
+    <ClCompile Include="..\..\Stock\CStockDayInfo.cpp" />
+    <ClCompile Include="..\..\Stock\CStockFileBase.cpp" />
+    <ClCompile Include="..\..\Stock\CStockFileBuy.cpp" />
+    <ClCompile Include="..\..\Stock\CStockFileCode.cpp" />
+    <ClCompile Include="..\..\Stock\CStockFileCompInfo.cpp" />
+    <ClCompile Include="..\..\Stock\CStockFileFHSP.cpp" />
+    <ClCompile Include="..\..\Stock\CStockFileFinance.cpp" />
+    <ClCompile Include="..\..\Stock\CStockFileHist.cpp" />
+    <ClCompile Include="..\..\Stock\CStockFileHYGN.cpp" />
+    <ClCompile Include="..\..\Stock\CStockHisInfo.cpp" />
+    <ClCompile Include="..\..\Stock\CStockKXTInfo.cpp" />
+    <ClCompile Include="..\..\Stock\CStockMng.cpp" />
+    <ClCompile Include="..\..\Stock\CStockRTInfo.cpp" />
+    <ClCompile Include="..\..\Stock\CStockRTList.cpp" />
+    <ClCompile Include="..\..\winUI\CBaseGraphics.cpp" />
+    <ClCompile Include="..\..\winUI\CDlgBase.cpp" />
+    <ClCompile Include="..\..\winUI\CDlgBuy01.cpp" />
+    <ClCompile Include="..\..\winUI\CDlgConfig.cpp" />
+    <ClCompile Include="..\..\winUI\CDlgDataAnalyse.cpp" />
+    <ClCompile Include="..\..\winUI\CDlgDownLoad.cpp" />
+    <ClCompile Include="..\..\winUI\CDlgKXTStudy.cpp" />
+    <ClCompile Include="..\..\winUI\CDlgSellMsg.cpp" />
+    <ClCompile Include="..\..\winUI\CDlgStockInfo.cpp" />
+    <ClCompile Include="..\..\winUI\CDlgStockSelect.cpp" />
+    <ClCompile Include="..\..\winUI\CWndBase.cpp" />
+    <ClCompile Include="..\..\winUI\CWndCompInfo.cpp" />
+    <ClCompile Include="..\..\winUI\CWndDayInfo.cpp" />
+    <ClCompile Include="..\..\winUI\CWndKXTInfo.cpp" />
+    <ClCompile Include="..\..\winUI\CWndKXTSelect.cpp" />
+    <ClCompile Include="..\..\winUI\CWndKXTView.cpp" />
+    <ClCompile Include="..\..\winUI\CWndMng.cpp" />
+    <ClCompile Include="..\..\winUI\CWndRTInfo.cpp" />
+    <ClCompile Include="..\..\winUI\CWndSelection.cpp" />
+    <ClCompile Include="bangStock.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Base\CBaseIO.h" />
+    <ClInclude Include="..\..\Base\CBaseObject.h" />
+    <ClInclude Include="..\..\Base\CDNSCache.h" />
+    <ClInclude Include="..\..\Base\CFileIO.h" />
+    <ClInclude Include="..\..\Base\CHTTPClient.h" />
+    <ClInclude Include="..\..\Base\CMsgMng.h" />
+    <ClInclude Include="..\..\Base\CMutexLock.h" />
+    <ClInclude Include="..\..\Base\CNodeList.h" />
+    <ClInclude Include="..\..\Base\CRegMng.h" />
+    <ClInclude Include="..\..\Base\CThreadWork.h" />
+    <ClInclude Include="..\..\Base\ULogFunc.h" />
+    <ClInclude Include="..\..\Base\UMsgMng.h" />
+    <ClInclude Include="..\..\Base\USystemFunc.h" />
+    <ClInclude Include="..\..\Base\UThreadFunc.h" />
+    <ClInclude Include="..\..\Base\UUrlParser.h" />
+    <ClInclude Include="..\..\Http\CHttpUtil.h" />
+    <ClInclude Include="..\..\Include\qcDef.h" />
+    <ClInclude Include="..\..\Include\qcErr.h" />
+    <ClInclude Include="..\..\Include\qcIO.h" />
+    <ClInclude Include="..\..\Include\qcMsg.h" />
+    <ClInclude Include="..\..\Include\qcStock.h" />
+    <ClInclude Include="..\..\Include\qcType.h" />
+    <ClInclude Include="..\..\Stock\CDataJson.h" />
+    <ClInclude Include="..\..\Stock\CStockAnalyseBase.h" />
+    <ClInclude Include="..\..\Stock\CStockAnalyseBuy00.h" />
+    <ClInclude Include="..\..\Stock\CStockAnalyseBuy01.h" />
+    <ClInclude Include="..\..\Stock\CStockAnalyseSell01.h" />
+    <ClInclude Include="..\..\Stock\CStockBase.h" />
+    <ClInclude Include="..\..\Stock\CStockDayInfo.h" />
+    <ClInclude Include="..\..\Stock\CStockFileBase.h" />
+    <ClInclude Include="..\..\Stock\CStockFileBuy.h" />
+    <ClInclude Include="..\..\Stock\CStockFileCode.h" />
+    <ClInclude Include="..\..\Stock\CStockFileCompInfo.h" />
+    <ClInclude Include="..\..\Stock\CStockFileFHSP.h" />
+    <ClInclude Include="..\..\Stock\CStockFileFinance.h" />
+    <ClInclude Include="..\..\Stock\CStockFileHist.h" />
+    <ClInclude Include="..\..\Stock\CStockFileHYGN.h" />
+    <ClInclude Include="..\..\Stock\CStockHistInfo.h" />
+    <ClInclude Include="..\..\Stock\CStockKXTInfo.h" />
+    <ClInclude Include="..\..\Stock\CStockMng.h" />
+    <CustomBuild Include="..\..\Stock\CStockRTInfo.h" />
+    <ClInclude Include="..\..\Stock\CStockRTList.h" />
+    <ClInclude Include="..\..\winUI\CBaseGraphics.h" />
+    <ClInclude Include="..\..\winUI\CDlgBase.h" />
+    <ClInclude Include="..\..\winUI\CDlgBuy01.h" />
+    <ClInclude Include="..\..\winUI\CDlgConfig.h" />
+    <ClInclude Include="..\..\winUI\CDlgDataAnalyse.h" />
+    <ClInclude Include="..\..\winUI\CDlgDownLoad.h" />
+    <ClInclude Include="..\..\winUI\CDlgKXTStudy.h" />
+    <ClInclude Include="..\..\winUI\CDlgSellMsg.h" />
+    <ClInclude Include="..\..\winUI\CDlgStockInfo.h" />
+    <ClInclude Include="..\..\winUI\CDlgStockSelect.h" />
+    <ClInclude Include="..\..\winUI\CWndBase.h" />
+    <ClInclude Include="..\..\winUI\CWndCompInfo.h" />
+    <CustomBuild Include="..\..\winUI\CWndDayInfo.h" />
+    <ClInclude Include="..\..\winUI\CWndKXTInfo.h" />
+    <ClInclude Include="..\..\winUI\CWndKXTSelect.h" />
+    <ClInclude Include="..\..\winUI\CWndKXTView.h" />
+    <ClInclude Include="..\..\winUI\CWndMng.h" />
+    <ClInclude Include="..\..\winUI\CWndRTInfo.h" />
+    <ClInclude Include="..\..\winUI\CWndSelection.h" />
+    <ClInclude Include="bangStock.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="bangStock.ico" />
+    <Image Include="icon1.ico" />
+    <Image Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="bangStock.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
