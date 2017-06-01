@@ -1,0 +1,286 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Http Files">
+      <UniqueIdentifier>{2dc00f05-8a92-40a6-ab81-714962078110}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base Files">
+      <UniqueIdentifier>{4f1f16eb-1177-43ee-a346-02624cc0bb1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Stock Files">
+      <UniqueIdentifier>{79f42053-f31a-4cc3-a7d3-cf961df4bbc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Stock Files\NetWork">
+      <UniqueIdentifier>{b0f1bc6d-c312-4c7c-a506-34b3f25e587a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Stock Files\File">
+      <UniqueIdentifier>{d9c6d19e-6587-4bb1-a22a-b2c0cbf3df85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Stock Files\Analyse">
+      <UniqueIdentifier>{80b6c520-b29c-4322-a47b-fc0a1c300fc9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="getStockFHSP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Http\CHttpUtil.cpp">
+      <Filter>Http Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Base\CBaseIO.cpp">
+      <Filter>Base Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Base\CBaseObject.cpp">
+      <Filter>Base Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Base\CDNSCache.cpp">
+      <Filter>Base Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Base\CFileIO.cpp">
+      <Filter>Base Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Base\CHTTPClient.cpp">
+      <Filter>Base Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Base\CMsgMng.cpp">
+      <Filter>Base Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Base\CMutexLock.cpp">
+      <Filter>Base Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Base\CNodeList.cpp">
+      <Filter>Base Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Base\CRegMng.cpp">
+      <Filter>Base Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Base\CThreadWork.cpp">
+      <Filter>Base Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Base\ULogFunc.c">
+      <Filter>Base Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Base\UMsgMng.cpp">
+      <Filter>Base Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Base\USystemFunc.cpp">
+      <Filter>Base Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Base\UThreadFunc.cpp">
+      <Filter>Base Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Base\UUrlParser.cpp">
+      <Filter>Base Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CDataJson.cpp">
+      <Filter>Stock Files\NetWork</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CStockBase.cpp">
+      <Filter>Stock Files\NetWork</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CStockDayInfo.cpp">
+      <Filter>Stock Files\NetWork</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CStockHisInfo.cpp">
+      <Filter>Stock Files\NetWork</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CStockKXTInfo.cpp">
+      <Filter>Stock Files\NetWork</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CStockMng.cpp">
+      <Filter>Stock Files\NetWork</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CStockRTInfo.cpp">
+      <Filter>Stock Files\NetWork</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CStockRTList.cpp">
+      <Filter>Stock Files\NetWork</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CStockFileBase.cpp">
+      <Filter>Stock Files\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CStockFileBuy.cpp">
+      <Filter>Stock Files\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CStockFileCode.cpp">
+      <Filter>Stock Files\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CStockFileCompInfo.cpp">
+      <Filter>Stock Files\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CStockFileFHSP.cpp">
+      <Filter>Stock Files\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CStockFileFinance.cpp">
+      <Filter>Stock Files\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CStockFileHist.cpp">
+      <Filter>Stock Files\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CStockFileHYGN.cpp">
+      <Filter>Stock Files\File</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CStockAnalyseBase.cpp">
+      <Filter>Stock Files\Analyse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CStockAnalyseBuy01.cpp">
+      <Filter>Stock Files\Analyse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Stock\CStockAnalyseSell01.cpp">
+      <Filter>Stock Files\Analyse</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="getStockFHSP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Http\CHttpUtil.h">
+      <Filter>Http Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\CBaseIO.h">
+      <Filter>Base Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\CBaseObject.h">
+      <Filter>Base Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\CDNSCache.h">
+      <Filter>Base Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\CFileIO.h">
+      <Filter>Base Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\CHTTPClient.h">
+      <Filter>Base Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\CMsgMng.h">
+      <Filter>Base Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\CMutexLock.h">
+      <Filter>Base Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\CNodeList.h">
+      <Filter>Base Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\CRegMng.h">
+      <Filter>Base Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\CThreadWork.h">
+      <Filter>Base Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\ULogFunc.h">
+      <Filter>Base Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\UMsgMng.h">
+      <Filter>Base Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\USystemFunc.h">
+      <Filter>Base Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\UThreadFunc.h">
+      <Filter>Base Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Base\UUrlParser.h">
+      <Filter>Base Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\qcStock.h">
+      <Filter>Stock Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CDataJson.h">
+      <Filter>Stock Files\NetWork</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CStockBase.h">
+      <Filter>Stock Files\NetWork</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CStockDayInfo.h">
+      <Filter>Stock Files\NetWork</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CStockHistInfo.h">
+      <Filter>Stock Files\NetWork</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CStockKXTInfo.h">
+      <Filter>Stock Files\NetWork</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CStockMng.h">
+      <Filter>Stock Files\NetWork</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CStockRTInfo.h">
+      <Filter>Stock Files\NetWork</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CStockRTList.h">
+      <Filter>Stock Files\NetWork</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CStockFileBase.h">
+      <Filter>Stock Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CStockFileBuy.h">
+      <Filter>Stock Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CStockFileCode.h">
+      <Filter>Stock Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CStockFileCompInfo.h">
+      <Filter>Stock Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CStockFileFHSP.h">
+      <Filter>Stock Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CStockFileFinance.h">
+      <Filter>Stock Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CStockFileHist.h">
+      <Filter>Stock Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CStockFileHYGN.h">
+      <Filter>Stock Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CStockAnalyseBase.h">
+      <Filter>Stock Files\Analyse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CStockAnalyseBuy01.h">
+      <Filter>Stock Files\Analyse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Stock\CStockAnalyseSell01.h">
+      <Filter>Stock Files\Analyse</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="getStockFHSP.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="small.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="getStockFHSP.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+</Project>
