@@ -38,6 +38,7 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 
 int					ParserIndexHistData (void);
+int					RemoveLastLine (void);
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
@@ -132,8 +133,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //	CStockFileCompInfo	filCompInfo;
 //	filCompInfo.Open ("600895", true);
 
-	CStockFileHYGN	filHYGN;
-	filHYGN.Open ("600895", false);
+//	CStockFileHYGN	filHYGN;
+//	filHYGN.Open ("600895", false);
 
 //	SetTimer (hWnd, 101, 10, NULL);
 
@@ -338,5 +339,70 @@ int ParserIndexHistData (void)
 		delete pItem;
 		pItem = m_lstItem.RemoveHead ();
 	}
+	return 0;
+}
+
+
+int	RemoveLastLine(void)
+{
+	char			szFile[256];
+	HANDLE			hFile = NULL;
+	char *			pData = new char[2048 * 1024];
+	int				nSize = 0;
+	CFileIO *		pFile = new CFileIO();
+	char *			pFind = NULL;
+	int				nSel = 0;
+
+	g_pCodeList->SetCurSel(nSel);
+	char * pCode = g_pCodeList->GetSelCode();
+	while (pCode != NULL)
+	{
+		qcGetAppPath(NULL, szFile, sizeof(szFile));
+		if (pCode[0] == '6' || pCode[0] == '9')
+			sprintf(szFile, "%sdata\\history\\sh%s.txt", szFile, pCode);
+		else if (pCode[0] == '3' || pCode[0] == '0' || pCode[0] == '2')
+			sprintf(szFile, "%sdata\\history\\sz%s.txt", szFile, pCode);
+		else
+			sprintf(szFile, "%sdata\\history\\%s.txt", szFile, pCode);
+
+		pFile->Open(szFile, 0, QCIO_FLAG_READ);
+		nSize = (int)pFile->GetSize();
+		memset(pData, 0, 2048 * 1024);
+		pFile->Read((unsigned char *)pData, nSize, true, 0);
+		pFile->Close();
+
+		if (nSize > 2048)
+		{
+			int nStart = nSize - 1024;
+			while (nStart < nSize)
+			{
+				pFind = strstr((char *)pData + nStart, "2017-06-01");
+				if (pFind != NULL)
+				{
+					pFind += 12;
+					pFind = strstr(pFind, "2017-06-01");
+					if (pFind != NULL)
+					{
+						pFile->Open(szFile, 0, QCIO_FLAG_WRITE);
+						pFile->Write((unsigned char *)pData, (pFind - pData));
+						pFile->Close();
+						break;
+					}
+					else
+					{
+						break;
+					}
+				}
+				nStart++;
+			}
+		}
+
+		nSel += 1;
+		if (nSel >= g_pCodeList->GetCodeCount())
+			break;
+		g_pCodeList->SetCurSel(nSel);
+		pCode = g_pCodeList->GetSelCode();
+	}
+
 	return 0;
 }

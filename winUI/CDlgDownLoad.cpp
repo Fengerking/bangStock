@@ -190,8 +190,15 @@ int CDlgDownLoad::ProcessDownLoadToday (void)
 	if (nRC != QC_ERR_NONE)
 	{
 		MessageBox (m_hDlg, "Try to download stock info failed!", "Error", MB_OK);
+		DownLoadFinish();
 		return nRC;
 	}
+
+	int			nMaxSize = 1024 * 1024;
+	char *		pFileData = new char[nMaxSize];
+	int			nFileSize = 0;
+	int			nRead = 0;
+	char		szToday[64];
 
 	char		szLine[1024];
 	char		szFile[256];
@@ -201,6 +208,8 @@ int CDlgDownLoad::ProcessDownLoadToday (void)
 	SYSTEMTIME	tmNow;
 	HANDLE		hFile = INVALID_HANDLE_VALUE;
 	GetLocalTime (&tmNow);
+
+	sprintf(szToday, "%d-%02d-%02d", tmNow.wYear, tmNow.wMonth, tmNow.wDay);
 
 	qcStockRealTimeItem *	pItem = NULL;
 	NODEPOS					pos = m_pRTInfoList->m_lstItem.GetTailPosition ();
@@ -238,7 +247,7 @@ int CDlgDownLoad::ProcessDownLoadToday (void)
 		tmSys.wHour += m_nOffsetHour;
 		if (tmSys.wDay == tmNow.wDay)
 		{
-			if (tmSys.wHour > 15)
+			if (tmSys.wHour >= 15)
 			{
 				CloseHandle (hFile);
 				strcat (m_pResultErr, pItem->m_szCode);
@@ -248,6 +257,29 @@ int CDlgDownLoad::ProcessDownLoadToday (void)
 				continue;
 			}
 		}
+
+		nFileSize = GetFileSize(hFile, NULL);
+		if (nFileSize > nMaxSize)
+		{
+			delete[]pFileData;
+			nMaxSize = nFileSize;
+			pFileData = new char[nMaxSize];
+		}
+		memset(pFileData, 0, nMaxSize);
+		ReadFile(hFile, pFileData, nFileSize, (LPDWORD)&nRead, NULL);
+		if (nRead > 1024)
+		{
+			if (strstr(pFileData + (nRead - 1024), szToday) != NULL)
+			{
+				CloseHandle(hFile);
+				strcat(m_pResultErr, pItem->m_szCode);
+				strcat(m_pResultErr, "  had updated today. \r\n");
+				strcat(m_pResultLog, pItem->m_szCode);
+				strcat(m_pResultLog, "  had updated today. \r\n");
+				continue;
+			}
+		}
+
 
 		sprintf (szLine, "%s,%.2f,%.2f,%.2f,%.2f,%d,%d,%.2f,%.2f,%.2f,%.2f\r\n",
 						 pItem->m_szDate, pItem->m_dOpenPrice, pItem->m_dNowPrice, pItem->m_dMaxPrice, pItem->m_dMinPrice,
@@ -307,7 +339,7 @@ int CDlgDownLoad::ProcessDownLoadToday (void)
 				tmSys.wHour += m_nOffsetHour;
 				if (tmSys.wDay == tmNow.wDay)
 				{
-					if (tmSys.wHour > 15)
+					if (tmSys.wHour >= 15)
 					{
 						CloseHandle (hFile);
 						strcat (m_pResultErr, pItem->m_szCode);
@@ -326,6 +358,7 @@ int CDlgDownLoad::ProcessDownLoadToday (void)
 		}
 
 	}
+	delete []pFileData;
 
 	SetWindowText (m_hEdtResult, m_pResultErr);
 	SendMessage (m_hProgress, PBM_SETPOS, (WPARAM) m_nCodeIndex, 0); 
