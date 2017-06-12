@@ -142,6 +142,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //	filIO.Open ("c:\\work\\Temp\\300316.txt", 0, QCIO_FLAG_WRITE);
 //	filIO.Write ((unsigned char *)pData, strlen (pData));
 
+//	RemoveLastLine();
 
    return TRUE;
 }
@@ -352,7 +353,9 @@ int	RemoveLastLine(void)
 	CFileIO *		pFile = new CFileIO();
 	char *			pFind = NULL;
 	int				nSel = 0;
+	char			szLastDay[64];
 
+	strcpy(szLastDay, "2017-06-06");
 	g_pCodeList->SetCurSel(nSel);
 	char * pCode = g_pCodeList->GetSelCode();
 	while (pCode != NULL)
@@ -376,11 +379,11 @@ int	RemoveLastLine(void)
 			int nStart = nSize - 1024;
 			while (nStart < nSize)
 			{
-				pFind = strstr((char *)pData + nStart, "2017-06-01");
+				pFind = strstr((char *)pData + nStart, szLastDay);
 				if (pFind != NULL)
 				{
 					pFind += 12;
-					pFind = strstr(pFind, "2017-06-01");
+					pFind = strstr(pFind, szLastDay);
 					if (pFind != NULL)
 					{
 						pFile->Open(szFile, 0, QCIO_FLAG_WRITE);

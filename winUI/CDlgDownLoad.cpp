@@ -186,7 +186,16 @@ int CDlgDownLoad::ProcessDownLoadToday (void)
 		m_pRTInfoList->SetNeedIndex (true);
 	else
 		m_pRTInfoList->SetNeedIndex (false);
-	int nRC = m_pRTInfoList->SetCode (m_szCodeList);
+	int nRC = QC_ERR_NONE;
+	int nTryTimes = 0;
+	while (nTryTimes <= 5)
+	{
+		nRC = m_pRTInfoList->SetCode(m_szCodeList);
+		if (nRC == QC_ERR_NONE)
+			break;
+		qcSleep(10000);
+		nTryTimes++;
+	}
 	if (nRC != QC_ERR_NONE)
 	{
 		MessageBox (m_hDlg, "Try to download stock info failed!", "Error", MB_OK);
