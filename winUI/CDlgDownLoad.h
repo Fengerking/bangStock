@@ -46,7 +46,7 @@ protected:
 	int			ProcessDownLoadToday (void);
 	int			ProcessDownLoadHistory (void);
 
-	int			DownLoadFinish (void);
+	int			DownLoadFinish (bool bShow);
 	int			Prepare (void);
 
 protected:

@@ -193,13 +193,13 @@ int CDlgDownLoad::ProcessDownLoadToday (void)
 		nRC = m_pRTInfoList->SetCode(m_szCodeList);
 		if (nRC == QC_ERR_NONE)
 			break;
-		qcSleep(10000);
+		qcSleep(200000);
 		nTryTimes++;
 	}
 	if (nRC != QC_ERR_NONE)
 	{
 		MessageBox (m_hDlg, "Try to download stock info failed!", "Error", MB_OK);
-		DownLoadFinish();
+		DownLoadFinish(false);
 		return nRC;
 	}
 
@@ -374,7 +374,7 @@ int CDlgDownLoad::ProcessDownLoadToday (void)
 
 	m_nCodeIndex += m_nCodeStep;
 	if (m_nCodeIndex >= m_nCodeCount)
-		DownLoadFinish ();
+		DownLoadFinish (true);
 	else
 		m_nTimerDownLoad = SetTimer (m_hDlg, WM_TIMER_DOWNLOAD_TODAY, 1000, NULL);
 	
@@ -470,7 +470,7 @@ int CDlgDownLoad::ProcessDownLoadHistory (void)
 	return QC_ERR_NONE;
 }
 
-int CDlgDownLoad::DownLoadFinish (void)
+int CDlgDownLoad::DownLoadFinish (bool bShow)
 {
 	QC_DEL_P (m_pRTInfoList);
 	QC_DEL_P (m_pHistInfo);
@@ -501,7 +501,9 @@ int CDlgDownLoad::DownLoadFinish (void)
 		WriteFile (hFile, m_pResultLog, strlen (m_pResultLog), &dwWrite, NULL);
 		CloseHandle (hFile);
 	}
-	MessageBox (m_hDlg, "Download finished!", "Information...", MB_OK);
+
+	if (bShow)
+		MessageBox (m_hDlg, "Download finished!", "Information...", MB_OK);
 
 	return 0;
 }
@@ -559,7 +561,7 @@ int	CDlgDownLoad::OnTimerUpdate (void)
 
 	if (nCurSel+1 == m_pCodeList->GetCodeCount ())
 	{
-		DownLoadFinish ();
+		DownLoadFinish (true);
 		return 0;
 	}
 	m_pCodeList->SetCurSel (nCurSel+1);
@@ -618,7 +620,7 @@ INT_PTR CALLBACK CDlgDownLoad::DownLoadDlgProc(HWND hDlg, UINT message, WPARAM w
 				int nRC = pDlgDown->ProcessDownLoadHistory ();
 				pDlgDown->m_nCodeIndex++;
 				if (pDlgDown->m_nCodeIndex >= pDlgDown->m_nCodeCount)
-					pDlgDown->DownLoadFinish ();
+					pDlgDown->DownLoadFinish (true);
 				else
 				{
 					SetWindowText (pDlgDown->m_hEdtInfo, pDlgDown->m_pResultErr);
